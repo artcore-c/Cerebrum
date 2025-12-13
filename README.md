@@ -3,7 +3,7 @@
 Hybrid AI system optimized for Raspberry Pi CM4 + VPS architecture.
 
 <p align="center">
-  <img src="docs/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
+  <img src="docs/images/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
 </p>
 
 ## Architecture
