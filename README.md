@@ -1,4 +1,4 @@
-# Cerebrum AI
+# Cerebrum Interactive AI Code Generation Shell
 
 Hybrid AI system optimized for Raspberry Pi CM4 + VPS architecture.
 
