@@ -1,0 +1,142 @@
+#!/bin/bash
+
+# Cerebrum CLI Helper for CM4
+# Easy commands for managing Cerebrum
+# Save as: /opt/cerebrum/scripts/cerebrum
+# Then: sudo ln -s /opt/cerebrum/scripts/cerebrum /usr/local/bin/cerebrum
+
+CEREBRUM_DIR="/opt/cerebrum"
+BANNER_SCRIPT="$CEREBRUM_DIR/scripts/banner.sh"
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Change to cerebrum directory
+cd "$CEREBRUM_DIR" 2>/dev/null || {
+    echo -e "${RED}Error: Cerebrum not found at $CEREBRUM_DIR${NC}"
+    exit 1
+}
+
+# Function to check if running
+is_running() {
+    pgrep -f "uvicorn cerebrum.api.main:app" > /dev/null
+}
+
+# Commands
+case "${1:-help}" in
+    start)
+        if is_running; then
+            echo -e "${YELLOW}Cerebrum is already running${NC}"
+            exit 0
+        fi
+        
+        echo -e "${GREEN}Starting Cerebrum...${NC}"
+        bash "$BANNER_SCRIPT" banner
+        
+        cd "$CEREBRUM_DIR"
+        source venv/bin/activate
+        export $(cat .env 2>/dev/null | grep -v '^#' | xargs)
+        
+        nohup uvicorn cerebrum.api.main:app \
+            --host ${CEREBRUM_HOST:-0.0.0.0} \
+            --port ${CEREBRUM_PORT:-7000} \
+            > logs/cerebrum.log 2>&1 &
+        
+        sleep 2
+        
+        if is_running; then
+            echo -e "${GREEN}✓ Cerebrum started on port 
+${CEREBRUM_PORT:-7000}${NC}"
+        else
+            echo -e "${RED}✗ Failed to start Cerebrum${NC}"
+            echo "Check logs: tail -f $CEREBRUM_DIR/logs/cerebrum.log"
+            exit 1
+        fi
+        ;;
+    
+    stop)
+        if ! is_running; then
+            echo -e "${YELLOW}Cerebrum is not running${NC}"
+            exit 0
+        fi
+        
+        echo -e "${YELLOW}Stopping Cerebrum...${NC}"
+        pkill -f "uvicorn cerebrum.api.main:app"
+        sleep 1
+        
+        if ! is_running; then
+            echo -e "${GREEN}✓ Cerebrum stopped${NC}"
+        else
+            echo -e "${RED}✗ Failed to stop Cerebrum${NC}"
+            exit 1
+        fi
+        ;;
+    
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    
+    status)
+        bash "$BANNER_SCRIPT" status
+        ;;
+    
+    test)
+        echo -e "${CYAN}Running Cerebrum tests...${NC}"
+        cd "$CEREBRUM_DIR"
+        bash test.sh
+        ;;
+    
+    logs)
+        echo -e "${CYAN}Cerebrum logs (Ctrl+C to exit):${NC}"
+        tail -f "$CEREBRUM_DIR/logs/cerebrum.log"
+        ;;
+    
+    health)
+        if is_running; then
+            curl -s http://localhost:${CEREBRUM_PORT:-7000}/health | jq '.' || echo 
+"Failed to get health status"
+        else
+            echo -e "${RED}Cerebrum is not running${NC}"
+            exit 1
+        fi
+        ;;
+    
+    vps)
+        source "$CEREBRUM_DIR/.env" 2>/dev/null
+        echo -e "${CYAN}Testing VPS connection...${NC}"
+        curl -s ${VPS_ENDPOINT:-http://100.78.22.113:9000}/health | jq '.' || echo 
+-e "${RED}VPS unreachable${NC}"
+        ;;
+    
+    banner)
+        bash "$BANNER_SCRIPT" full
+        ;;
+    
+    help|--help|-h)
+        bash "$BANNER_SCRIPT" banner
+        echo -e "${CYAN}Cerebrum CLI Commands:${NC}"
+        echo ""
+        echo -e "  ${GREEN}cerebrum start${NC}      - Start Cerebrum API server"
+        echo -e "  ${GREEN}cerebrum stop${NC}       - Stop Cerebrum API server"
+        echo -e "  ${GREEN}cerebrum restart${NC}    - Restart Cerebrum"
+        echo -e "  ${GREEN}cerebrum status${NC}     - Show system status"
+        echo -e "  ${GREEN}cerebrum test${NC}       - Run system tests"
+        echo -e "  ${GREEN}cerebrum logs${NC}       - View live logs"
+        echo -e "  ${GREEN}cerebrum health${NC}     - Check API health"
+        echo -e "  ${GREEN}cerebrum vps${NC}        - Test VPS connection"
+        echo -e "  ${GREEN}cerebrum banner${NC}     - Show full banner"
+        echo ""
+        ;;
+    
+    *)
+        echo -e "${RED}Unknown command: $1${NC}"
+        echo "Run 'cerebrum help' for available commands"
+        exit 1
+        ;;
+esac

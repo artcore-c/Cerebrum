@@ -1,0 +1,16 @@
+# Cerebrum VPS Backend Requirements
+# Role: Heavy inference backend
+
+# Core
+fastapi>=0.104.0
+uvicorn>=0.24.0
+psutil>=5.9.0
+httpx>=0.25.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Model inference (heavy)
+llama-cpp-python>=0.2.0
+
+# Note: Build llama-cpp-python on VPS
+# VPS has better CPU/RAM for compilation

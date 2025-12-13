@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Cerebrum specific
+cm4/data/cache/
+cm4/logs/*.log
+vps/logs/*.log
+shared/models/*.gguf
+shared/models/*.bin
+shared/embeddings/*.faiss
+
+# Environment files
+.env
+.env.local
+*.key
+*.pem
+
+# OS
+Thumbs.db
+.DS_Store
