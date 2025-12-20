@@ -2,7 +2,7 @@
 
 # Cerebrum Banner Display for CM4
 # Shows cool ASCII art when starting services
-# Save as: /opt/cerebrum/scripts/banner.sh
+# Save as: /opt/cerebrum-pi/scripts/banner.sh
 
 # Colors
 RED='\033[0;31m'

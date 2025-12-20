@@ -1,0 +1,18 @@
+[Unit]
+Description=Cerebrum VPS Backend
+After=network.target
+
+[Service]
+Type=simple
+User=unicorn1
+WorkingDirectory=/home/unicorn1/cerebrum-backend
+Environment="PATH=/home/unicorn1/cerebrum-backend/venv/bin"
+EnvironmentFile=/home/unicorn1/cerebrum-backend/.env
+ExecStart=/home/unicorn1/cerebrum-backend/venv/bin/uvicorn vps_server.main:app --host ${VPS_BIND_IP} --port ${CEREBRUM_VPS_PORT}
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/home/unicorn1/cerebrum-backend/logs/backend.log
+StandardError=append:/home/unicorn1/cerebrum-backend/logs/error.log
+
+[Install]
+WantedBy=multi-user.target

@@ -21,7 +21,7 @@
 ### Test CM4
 ```bash
 ssh kali@100.75.37.26
-cd /opt/cerebrum
+cd /opt/cerebrum-pi
 ./test.sh
 ```
 

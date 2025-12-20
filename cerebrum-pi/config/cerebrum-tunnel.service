@@ -1,3 +1,8 @@
+# LEGACY / EXPERIMENTAL: Reverse SSH transport (deprecated)
+# Reverse SSH tunnel approach used during early Cerebrum testing.
+# For reference only. Not part of the current deployment.
+
+
 [Unit]
 Description=Persistent reverse SSH tunnel for Cerebrum (CM4 -> VPS)
 After=network-online.target

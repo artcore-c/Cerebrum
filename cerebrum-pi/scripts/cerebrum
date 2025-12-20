@@ -2,10 +2,10 @@
 
 # Cerebrum CLI Helper for CM4
 # Easy commands for managing Cerebrum
-# Save as: /opt/cerebrum/scripts/cerebrum
-# Then: sudo ln -s /opt/cerebrum/scripts/cerebrum /usr/local/bin/cerebrum
+# Save as: /opt/cerebrum-pi/scripts/cerebrum
+# Then: sudo ln -s /opt/cerebrum-pi/scripts/cerebrum /usr/local/bin/cerebrum
 
-CEREBRUM_DIR="/opt/cerebrum"
+CEREBRUM_DIR="/opt/cerebrum-pi"
 BANNER_SCRIPT="$CEREBRUM_DIR/scripts/banner.sh"
 
 # Colors

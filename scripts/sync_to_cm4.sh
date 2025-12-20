@@ -3,7 +3,7 @@
 
 CM4_USER="${1:-kali}"
 CM4_HOST="${2:-100.75.37.26}"
-CM4_PATH="/opt/cerebrum"
+CM4_PATH="/opt/cerebrum-pi"
 
 echo "Syncing to CM4: $CM4_USER@$CM4_HOST:$CM4_PATH"
 
