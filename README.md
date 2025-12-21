@@ -34,25 +34,31 @@ Hybrid AI system optimized for Raspberry Pi CM4 + VPS architecture.
 - **docs/** - Documentation
 - **deployment/** - Deployment scripts
 
-## Quick Start
+## Deployment & Operation
 
-### CM4 Setup
-```bash
-cd cm4
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-./start.sh
-```
+Cerebrum is composed of two independently deployed components:
 
-### VPS Setup
-```bash
-cd vps
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-./start.sh
-```
+### 🔹 CM4 Orchestrator (Raspberry Pi)
+
+Handles request routing, lightweight reasoning, and VPS coordination.
+
+**Deployment instructions:**  
+[`cerebrum-pi/README.md`](./cerebrum-pi/README.md)
+
+---
+
+### 🔹 VPS Inference Backend
+
+Runs heavy LLM inference using `llama.cpp` with strict resource controls.
+
+**Deployment instructions:**  
+[`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
+
+---
+
+⚠️ **Important:**  
+The root of this repository is **not directly executable**.  
+All runtime instructions live in the component-specific READMEs above.
 
 ## Development Workflow
 
@@ -81,7 +87,6 @@ pip install -r requirements.txt
 See `docs/` directory for detailed documentation:
 - Architecture diagrams
 - API reference
-- Deployment guides
 - Performance optimization
 
 ## License
