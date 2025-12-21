@@ -39,6 +39,23 @@ MAX_CPU_PERCENT = float(os.getenv("MAX_CPU_PERCENT", "70"))
 ALLOWED_CM4_IP = os.getenv("ALLOWED_CM4_IP", "127.0.0.1")
 CEREBRUM_N_THREADS = int(os.getenv("CEREBRUM_N_THREADS", "1"))
 
+# ============================================================================
+# SECURITY HELPERS
+# ============================================================================
+
+def is_allowed_client(request: Request) -> bool:
+    client_ip = request.client.host
+
+    # Always allow local loopback (health checks, local testing)
+    if client_ip in ("127.0.0.1", "::1"):
+        return True
+
+    # Allow CM4 over Tailscale
+    if ALLOWED_CM4_IP and client_ip == ALLOWED_CM4_IP:
+        return True
+
+    return False
+
 # Initialize FastAPI
 app = FastAPI(
     title="Cerebrum VPS Backend",
@@ -297,7 +314,7 @@ async def health_check():
         ram_available_gb=ram_available,
         ram_used_gb=ram_used,
         models_in_cache=list(vps_engine.models.keys()),
-        ios_backend_active=vps_engine.is_ios_backend_active(),
+        # ios_backend_active=vps_engine.is_ios_backend_active(),
         uptime_seconds=vps_engine.get_uptime()
     )
 
@@ -458,10 +475,10 @@ async def get_stats(x_api_key: str = Header(None, alias="X-API-Key")):
                 name: time.isoformat()
                 for name, time in vps_engine.load_times.items()
             }
-        },
-        "ios_backend": {
-            "active": vps_engine.is_ios_backend_active(),
-            "port": IOS_BACKEND_PORT
+        # },
+        # "ios_backend": {
+            # "active": vps_engine.is_ios_backend_active(),
+            # "port": IOS_BACKEND_PORT
         }
     }
 
