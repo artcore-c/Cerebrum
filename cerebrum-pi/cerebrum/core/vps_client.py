@@ -1,3 +1,5 @@
+# cerebrum-pi/cerebrum/core/vps_client.py
+
 """
 CM4 VPS Client - Communicates with VPS Backend
 ==============================================
@@ -11,14 +13,13 @@ File: /opt/cerebrum-pi/cerebrum/core/vps_client.py
 import os
 import time
 import logging
+import asyncio # Import asyncio for sleep
 from typing import Optional, Dict, Any
-from datetime import datetime
 import httpx
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-
 logger = logging.getLogger('CerebrumVPS')
 
 
@@ -31,25 +32,35 @@ class VPSClient:
         self,
         vps_endpoint: Optional[str] = None,
         api_key: Optional[str] = None,
-        timeout: float = 30.0,
+        timeout: float = 120.0, # 2 minutes for first load
         max_retries: int = 2
     ):
         """
         Initialize VPS client.
 
         Args:
-            vps_endpoint: VPS endpoint URL (e.g., http://100.78.22.113:9000)
+            vps_endpoint: VPS endpoint URL (e.g., http://127.0.0.1:9000)
             api_key: API key for authentication
             timeout: Request timeout in seconds
             max_retries: Number of retry attempts
         """
         self.endpoint = vps_endpoint or os.getenv(
-            "VPS_ENDPOINT", 
-            "http://100.78.22.113:9000"
+            "VPS_ENDPOINT",
+            "http://127.0.0.1:9000"
         )
         self.api_key = api_key or os.getenv("VPS_API_KEY", "")
         self.timeout = timeout
         self.max_retries = max_retries
+        
+        #Client
+        self._client = httpx.AsyncClient(
+            timeout=httpx.Timeout(
+                connect=5.0,
+                read=self.timeout,
+                write=5.0,
+                pool=5.0,
+            )
+        )
 
         # Statistics
         self.requests_sent = 0
@@ -57,20 +68,14 @@ class VPSClient:
         self.requests_failed = 0
         self.total_inference_time = 0.0
 
-        # Client
-        self._client: Optional[httpx.AsyncClient] = None
+        # Circuit breaker
+        self._last_failure_time = 0.0
+        self._cooldown_seconds = 10
+        
+        # Limit concurrent requests
+        self._semaphore = asyncio.Semaphore(1)
 
         logger.info(f"VPS Client initialized: {self.endpoint}")
-
-    async def __aenter__(self):
-        """Async context manager entry"""
-        self._client = httpx.AsyncClient(timeout=self.timeout)
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit"""
-        if self._client:
-            await self._client.aclose()
 
     async def check_health(self) -> Dict[str, Any]:
         """
@@ -80,12 +85,14 @@ class VPSClient:
             Health status dict
         """
         try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                response = await client.get(f"{self.endpoint}/health")
-                response.raise_for_status()
-                return response.json()
+            response = await self._client.get(
+                f"{self.endpoint}/health",
+                timeout=5.0  # Override the 120s default for health checks
+            )
+            response.raise_for_status()
+            return response.json()
         except Exception as e:
-            logger.error(f"VPS health check failed: {e}")
+            logger.warning(f"VPS health check failed: {e}")
             return {
                 "status": "unavailable",
                 "available": False,
@@ -127,6 +134,14 @@ class VPSClient:
             VPSUnavailableError: If VPS is unavailable
             VPSInferenceError: If inference fails
         """
+        max_tokens = min(max_tokens, 512)
+
+        # Circuit breaker check
+        if time.time() - self._last_failure_time < self._cooldown_seconds:
+            raise VPSUnavailableError(
+                f"VPS in cooldown (failed recently, retry in {self._cooldown_seconds - (time.time() - self._last_failure_time):.0f}s)"
+            )
+        
         self.requests_sent += 1
         start_time = time.time()
 
@@ -142,30 +157,28 @@ class VPSClient:
             "X-API-Key": self.api_key,
             "Content-Type": "application/json"
         }
-
-        # Retry logic
-        last_error = None
-        for attempt in range(self.max_retries + 1):
-            try:
-                async with httpx.AsyncClient(timeout=self.timeout) as client:
-                    response = await client.post(
+        
+        async with self._semaphore:
+            # Retry logic
+            last_error = None
+            for attempt in range(self.max_retries + 1):
+                try:
+                    response = await self._client.post(
                         f"{self.endpoint}/v1/inference",
                         json=request_data,
                         headers=headers
                     )
 
                     if response.status_code == 200:
-                        result = response.json()
-
                         # Update statistics
                         elapsed = time.time() - start_time
                         self.requests_successful += 1
                         self.total_inference_time += elapsed
-
+                        
+                        result = response.json()
                         logger.info(
                             f"VPS inference successful: {model} "
-                            f"({result.get('tokens_generated', 0)} tokens in 
-{elapsed:.2f}s)"
+                            f"({result.get('tokens_generated', 0)} tokens in {elapsed:.2f}s)"
                         )
 
                         return result
@@ -173,7 +186,7 @@ class VPSClient:
                     elif response.status_code == 503:
                         # VPS overloaded
                         raise VPSUnavailableError(
-                            "VPS is overloaded or busy with iOS backend"
+                            "VPS overloaded"
                         )
 
                     elif response.status_code == 403:
@@ -184,48 +197,44 @@ class VPSClient:
 
                     else:
                         raise VPSInferenceError(
-                            f"VPS returned status {response.status_code}: 
-{response.text}"
+                            f"VPS returned status {response.status_code}: {response.text}"
                         )
 
-            except httpx.TimeoutException as e:
-                last_error = VPSUnavailableError(f"VPS timeout: {e}")
-                if attempt < self.max_retries:
-                    logger.warning(f"VPS timeout, retrying ({attempt + 
-1}/{self.max_retries})...")
-                    await asyncio.sleep(1)
-                    continue
+                except httpx.TimeoutException as e:
+                    last_error = VPSUnavailableError(f"VPS timeout: {e}")
+                    if attempt < self.max_retries:
+                        logger.warning(f"VPS timeout, retrying ({attempt + 1}/{self.max_retries})...")
+                        await asyncio.sleep(min(2 ** attempt, 5))  # 1s, 2s, 4s, max 5s
+                        continue
 
-            except httpx.ConnectError as e:
-                last_error = VPSUnavailableError(f"Cannot connect to VPS: {e}")
-                if attempt < self.max_retries:
-                    logger.warning(f"VPS connection error, retrying ({attempt + 
-1}/{self.max_retries})...")
-                    await asyncio.sleep(1)
-                    continue
+                except httpx.ConnectError as e:
+                    last_error = VPSUnavailableError(f"Cannot connect to VPS: {e}")
+                    if attempt < self.max_retries:
+                        logger.warning(f"VPS connection error, retrying ({attempt + 1}/{self.max_retries})...")
+                        await asyncio.sleep(min(2 ** attempt, 5))  # 1s, 2s, 4s, max 5s
+                        continue
 
-            except VPSUnavailableError as e:
-                last_error = e
-                # Don't retry if VPS is intentionally rejecting (overloaded)
-                break
+                except VPSUnavailableError as e:
+                    last_error = e
+                    # Don't retry if VPS is intentionally rejecting (overloaded)
+                    break
 
-            except VPSInferenceError as e:
-                last_error = e
-                # Don't retry on auth errors or other client errors
-                break
+                except VPSInferenceError as e:
+                    last_error = e
+                    # Don't retry on auth errors or other client errors
+                    break
 
-            except Exception as e:
-                last_error = VPSInferenceError(f"Unexpected error: {e}")
-                if attempt < self.max_retries:
-                    logger.warning(f"Unexpected error, retrying ({attempt + 
-1}/{self.max_retries})...")
-                    await asyncio.sleep(1)
-                    continue
+                except Exception as e:
+                    last_error = VPSInferenceError(f"Unexpected error: {e}")
+                    if attempt < self.max_retries:
+                        logger.warning(f"Unexpected error, retrying ({attempt + 1}/{self.max_retries})...")
+                        await asyncio.sleep(min(2 ** attempt, 5))  # 1s, 2s, 4s, max 5s
+                        continue
 
         # All retries failed
         self.requests_failed += 1
-        logger.error(f"VPS inference failed after {self.max_retries + 1} attempts: 
-{last_error}")
+        self._last_failure_time = time.time()
+        logger.error(f"VPS inference failed after {self.max_retries + 1} attempts: {last_error}")
         raise last_error
 
     async def list_models(self) -> Dict[str, Any]:
@@ -236,13 +245,13 @@ class VPSClient:
             Models dict
         """
         try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                response = await client.get(
-                    f"{self.endpoint}/v1/models",
-                    headers={"X-API-Key": self.api_key}
-                )
-                response.raise_for_status()
-                return response.json()
+            response = await self._client.get(
+                f"{self.endpoint}/v1/models",
+                headers={"X-API-Key": self.api_key},
+                timeout=5.0
+            )
+            response.raise_for_status()
+            return response.json()
         except Exception as e:
             logger.error(f"Failed to list VPS models: {e}")
             return {"available_models": [], "error": str(e)}
@@ -255,13 +264,13 @@ class VPSClient:
             Stats dict
         """
         try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                response = await client.get(
-                    f"{self.endpoint}/v1/stats",
-                    headers={"X-API-Key": self.api_key}
-                )
-                response.raise_for_status()
-                return response.json()
+            response = await self._client.get(
+                f"{self.endpoint}/v1/stats",
+                headers={"X-API-Key": self.api_key},
+                timeout=5.0
+            )
+            response.raise_for_status()
+            return response.json()
         except Exception as e:
             logger.error(f"Failed to get VPS stats: {e}")
             return {"error": str(e)}
@@ -294,6 +303,10 @@ class VPSClient:
             "total_inference_time_seconds": round(self.total_inference_time, 2)
         }
 
+    async def aclose(self) -> None:
+        """Close the persistent HTTP client"""
+        if self._client:
+            await self._client.aclose()
 
 # Custom exceptions
 class VPSUnavailableError(Exception):
@@ -323,6 +336,4 @@ def get_vps_client() -> VPSClient:
     return _vps_client
 
 
-# Import asyncio for sleep
-import asyncio
-                                                   
+
