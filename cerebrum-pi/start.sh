@@ -2,21 +2,26 @@
 # Start Cerebrum CM4 Orchestrator
 
 cd /opt/cerebrum-pi
+
+# Activate venv
 source venv/bin/activate
 
-# Check if .env exists
-if [ ! -f .env ]; then
-    echo "Error: .env file not found!"
-    echo "Run: cp .env.example .env"
-    echo "Then edit .env with your VPS_API_KEY"
+# Sanity check
+if [ ! -x "venv/bin/uvicorn" ]; then
+    echo "ERROR: uvicorn not found in venv"
     exit 1
 fi
 
 # Load environment
-export $(cat .env | grep -v '^#' | xargs)
+if [ ! -f .env ]; then
+    echo "Error: .env file not found!"
+    exit 1
+fi
+
+export $(grep -v '^#' .env | xargs)
 
 # Check API key
-if [ -z "$VPS_API_KEY" ] || [ "$VPS_API_KEY" == "your-api-key-from-vps-here" ]; then
+if [ -z "$VPS_API_KEY" ] || [ "$VPS_API_KEY" == "RzNR7FfyEsrsyG8UPflpjTMMshyz4sp4" ]; then
     echo "WARNING: VPS_API_KEY not configured!"
     echo "Edit .env and add the API key from your VPS"
     read -p "Continue anyway? (y/n) " -n 1 -r
@@ -32,8 +37,9 @@ echo "Port: $CEREBRUM_PORT"
 echo "VPS: $VPS_ENDPOINT"
 echo ""
 
-# Start server
-uvicorn cerebrum.api.main:app \
+# Start server (EXPLICIT PATH)
+exec venv/bin/uvicorn cerebrum.api.main:app \
     --host $CEREBRUM_HOST \
     --port $CEREBRUM_PORT \
     --log-level info
+
