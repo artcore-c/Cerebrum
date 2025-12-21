@@ -91,7 +91,7 @@ class HealthResponse(BaseModel):
     ram_available_gb: float
     ram_used_gb: float
     models_in_cache: list[str]
-    ios_backend_active: bool
+    # ios_backend_active: bool
     uptime_seconds: float
 
 
@@ -119,16 +119,16 @@ class VPSModelEngine:
         used = mem.used / (1024**3)
         return available, used
 
-    def is_ios_backend_active(self) -> bool:
-        """Check if iOS backend is using resources"""
-        try:
-            for conn in psutil.net_connections():
-                if conn.laddr.port == IOS_BACKEND_PORT and conn.status == 'LISTEN':
-                    # Check if there are active connections
-                    return True
-        except (psutil.AccessDenied, AttributeError):
-            pass
-        return False
+    # def is_ios_backend_active(self) -> bool:
+        # """Check if iOS backend is using resources"""
+        # try:
+            # for conn in psutil.net_connections():
+                # if conn.laddr.port == IOS_BACKEND_PORT and conn.status == 'LISTEN':
+                    # # Check if there are active connections
+                    # return True
+        # except (psutil.AccessDenied, AttributeError):
+            # pass
+        # return False
 
     def can_accept_request(self) -> tuple[bool, str]:
         """Check if VPS can accept new inference request"""
@@ -141,10 +141,10 @@ class VPSModelEngine:
         if available_ram < 1.0:  # Less than 1GB available
             return False, f"Insufficient RAM: {available_ram:.2f}GB available"
 
-        if self.is_ios_backend_active():
-            # Be more conservative when iOS backend is active
-            if cpu_usage > 50:
-                return False, "iOS backend active, reducing load"
+        # if self.is_ios_backend_active():
+            # # Be more conservative when iOS backend is active
+            # if cpu_usage > 50:
+                # return False, "iOS backend active, reducing load"
 
         return True, "Available"
 
@@ -317,6 +317,13 @@ async def inference(
     if x_api_key != CEREBRUM_API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API key")
 
+    # Verify client IP (defense-in-depth)
+    if not is_allowed_client(http_request):
+        raise HTTPException(
+            status_code=403,
+            detail="Client IP not allowed"
+        )
+    
     logger.info(f"Inference request: {request.model} - {len(request.prompt)} chars")
 
     try:
