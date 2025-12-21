@@ -5,7 +5,7 @@ Cerebrum CM4 Main API Server
 FastAPI server running on CM4 that orchestrates requests
 between local processing and VPS backend.
 
-File: /opt/cerebrum/cerebrum/api/main.py
+File: /opt/cerebrum-pi/cerebrum/api/main.py
 
 Run: uvicorn cerebrum.api.main:app --host 0.0.0.0 --port 7000
 """

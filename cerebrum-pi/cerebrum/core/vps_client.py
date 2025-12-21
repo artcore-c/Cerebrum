@@ -5,7 +5,7 @@ CM4 VPS Client - Communicates with VPS Backend
 Handles all communication with the VPS inference backend over Tailscale.
 Includes retry logic, timeout handling, and graceful fallbacks.
 
-File: /opt/cerebrum/cerebrum/core/vps_client.py
+File: /opt/cerebrum-pi/cerebrum/core/vps_client.py
 """
 
 import os
