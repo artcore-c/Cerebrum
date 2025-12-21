@@ -40,25 +40,25 @@ Cerebrum is composed of two independently deployed components:
 
 ### 🔹 CM4 Orchestrator (Raspberry Pi)
 
-Handles request routing, lightweight reasoning, and VPS coordination.
+**Handles request routing, lightweight reasoning, and VPS coordination**
 
-**Deployment instructions:**  
+### Deployment:  
 [`cerebrum-pi/README.md`](./cerebrum-pi/README.md)
 
 ---
 
 ### 🔹 VPS Inference Backend
 
-Runs heavy LLM inference using `llama.cpp` with strict resource controls.
-#### The backend supports multiple GGUF models via llama.cpp-compatible runtimes.
-#### Models are selected dynamically at request time.
+**Runs heavy LLM inference using `llama.cpp` with strict resource controls**
+The backend supports multiple GGUF models via llama.cpp-compatible runtimes
+Models are selected dynamically at request time
 
-**Deployment instructions:**  
+### Deployment:  
 [`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
 
 ---
 
-⚠️ **Important:**  
+**Note:**  
 The root of this repository is **not directly executable**.  
 All runtime instructions live in the component-specific READMEs above.
 
