@@ -20,7 +20,7 @@ Hybrid AI system optimized for Raspberry Pi CM4 + VPS architecture.
              │ Port 7000 → 9000
 ┌────────────▼────────────────────┐
 │  VPS (Heavy Inference Backend)  │
-│  - Model loading (llama.cpp)    │
+│  - Model loading eg.(llama.cpp) │
 │  - Large model inference        │
 │  - GPU/CPU optimization         │
 └─────────────────────────────────┘
@@ -50,6 +50,8 @@ Handles request routing, lightweight reasoning, and VPS coordination.
 ### 🔹 VPS Inference Backend
 
 Runs heavy LLM inference using `llama.cpp` with strict resource controls.
+####The backend supports multiple GGUF models via llama.cpp-compatible runtimes.
+####Models are selected dynamically at request time.
 
 **Deployment instructions:**  
 [`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
@@ -78,9 +80,10 @@ All runtime instructions live in the component-specific READMEs above.
 
 ### VPS (Port 9000)
 - Heavy model inference
-- Model caching
-- Resource management
-- iOS backend protection
+- Multi-model GGUF support (e.g. Qwen, CodeLLaMA, DeepSeek)
+- llama.cpp-compatible backends
+- Model caching and lifecycle control
+- Resource management and isolation
 
 ## Documentation
 
