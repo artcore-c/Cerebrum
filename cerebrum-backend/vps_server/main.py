@@ -32,9 +32,12 @@ logging.basicConfig(
 logger = logging.getLogger('CerebrumVPS')
 
 # Configuration
-CEREBRUM_API_KEY = os.getenv("CEREBRUM_API_KEY","M3LEJciyZ2nn50txXyPNH6D9k8P9fuLn")
+CEREBRUM_API_KEY = os.getenv("CEREBRUM_API_KEY")
+if not CEREBRUM_API_KEY:
+    raise RuntimeError("CEREBRUM_API_KEY is not set")
 MAX_CPU_PERCENT = float(os.getenv("MAX_CPU_PERCENT", "70"))
 ALLOWED_CM4_IP = os.getenv("ALLOWED_CM4_IP", "127.0.0.1")
+CEREBRUM_N_THREADS = int(os.getenv("CEREBRUM_N_THREADS", "1"))
 
 # Initialize FastAPI
 app = FastAPI(

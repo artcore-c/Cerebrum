@@ -1,11 +1,11 @@
 #!/bin/bash
-# Sync VPS code to server
+# Sync Cerebrum VPS backend code to server
 
 VPS_USER="${1:-unicorn1}"
 VPS_HOST="${2:-100.78.22.113}"
-VPS_PATH="~/cerebrum-backend"
+VPS_PATH="/home/unicorn1/cerebrum-backend"
 
-echo "Syncing to VPS: $VPS_USER@$VPS_HOST:$VPS_PATH"
+echo "Syncing cerebrum-backend to VPS: $VPS_USER@$VPS_HOST:$VPS_PATH"
 
 rsync -avz --progress \
     --exclude='venv' \
@@ -13,6 +13,8 @@ rsync -avz --progress \
     --exclude='*.pyc' \
     --exclude='.git' \
     --exclude='logs/*.log' \
-    vps/ "$VPS_USER@$VPS_HOST:$VPS_PATH/"
+    cerebrum-backend/ \
+    "$VPS_USER@$VPS_HOST:$VPS_PATH/"
 
 echo "✓ Sync complete!"
+
