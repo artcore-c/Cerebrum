@@ -84,11 +84,11 @@ All runtime instructions live in the component-specific READMEs above.
 
 ## Documentation
 
-See `docs/` directory for detailed documentation:
-- Architecture diagrams
-- API reference
-- Performance optimization
+See `docs/` directory for detailed information:
+- ['Architecture'](./docs/architecture/Architecture.md)
+- [API Reference](./docs/api/API.md)
+- [Performance & Optimization](./docs/optimization/PERFORMANCE.md)
 
 ## License
 
-MIT
+This project is licensed under the [MIT License](./LICENSE).
