@@ -50,8 +50,8 @@ Cerebrum is composed of two independently deployed components:
 ### 🔹 VPS Inference Backend
 
 **Runs heavy LLM inference using `llama.cpp` with strict resource controls**
-The backend supports multiple GGUF models via llama.cpp-compatible runtimes
-Models are selected dynamically at request time
+- The backend supports multiple GGUF models via llama.cpp-compatible runtimes
+- Models are selected dynamically at request time
 
 ### Deployment:  
 [`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
