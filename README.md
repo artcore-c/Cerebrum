@@ -85,9 +85,9 @@ All runtime instructions live in the component-specific READMEs above.
 ## Documentation
 
 See `docs/` directory for detailed information:
-- ['Architecture'](./docs/architecture/Architecture.md)
+- [Architecture](./docs/architecture/Architecture.md)
 - [API Reference](./docs/api/API.md)
-- [Performance & Optimization](./docs/optimization/PERFORMANCE.md)
+- [Optimization](./docs/optimization/PERFORMANCE.md)
 
 ## License
 
