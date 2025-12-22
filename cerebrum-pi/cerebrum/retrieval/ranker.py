@@ -29,6 +29,32 @@ def score_chunk(chunk: str, query: str) -> int:
     return len(query_tokens & chunk_tokens)
 
 
+def dedupe_chunks(chunks: List[str]) -> List[str]:
+    """
+    Remove duplicate chunks using hash-based deduplication.
+    
+    Critical for repeated code patterns.
+    
+    Args:
+        chunks: List of text chunks
+        
+    Returns:
+        List of unique chunks
+    """
+    seen = set()
+    unique = []
+    
+    for chunk in chunks:
+        # Hash normalized chunk
+        chunk_hash = hash(chunk.strip())
+        
+        if chunk_hash not in seen:
+            seen.add(chunk_hash)
+            unique.append(chunk)
+    
+    return unique
+
+
 def select_top_chunks(
     chunks: List[str],
     query: str,
