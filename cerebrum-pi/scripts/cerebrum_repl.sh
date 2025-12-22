@@ -1,11 +1,16 @@
 #!/bin/bash
 
-# Cerebrum Interactive REPL
+# Cerebrum Streaming REPL (Optimized)
 # A minimal, text-first interface for AI code generation
 # Save as: /opt/cerebrum-pi/scripts/cerebrum_repl.sh
 # Usage: cerebrum chat  (or  ./cerebrum_repl.sh)
 
+set -u
+
+# ─────────────────────────────
 # Colors
+# ─────────────────────────────
+
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,272 +20,206 @@ GRAY='\033[0;90m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# Configuration
+# ─────────────────────────────
+# Config
+# ─────────────────────────────
+
 API_URL="http://localhost:7000"
 HISTORY_FILE="$HOME/.cerebrum_history"
 
-# Default parameters
 MODEL="qwen_7b"
 LANGUAGE="python"
 MAX_TOKENS=512
 TEMPERATURE=0.2
 
-# State
 MULTILINE_MODE=false
-MULTILINE_BUFFER=""
+MULTILINE_FILE=""
 
-# Get terminal width
-TERM_WIDTH=$(tput cols)
+TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
 
-# Center text function
-center_text() {
-    local text="$1"
-    local text_length=${#text}
-    local padding=$(( (TERM_WIDTH - text_length) / 2 ))
-    printf "%${padding}s%s\n" "" "$text"
+# ─────────────────────────────
+# Helpers
+# ─────────────────────────────
+
+hr() {
+    printf "%${TERM_WIDTH}s\n" | tr ' ' '-'
 }
+
+center() {
+    local s="$1"
+    printf "%*s\n" $(( (TERM_WIDTH + ${#s}) / 2 )) "$s"
+}
+
+# ─────────────────────────────
+# UI
+# ─────────────────────────────
 
 # Show banner
 show_banner() {
     clear
     echo -e "${CYAN}"
-    center_text "   ____              _                          "
-    center_text "  / ___|___ _ __ ___| |__  _ __ _   _ _ __ ___TM"
-    center_text " | |   / _ \ '__/ _ \ '_ \| '__| | | | '_ \` _ \."
-    center_text " | |__|  __/ | |  __/ |_) | |  | |_| | | | | | |"
-    center_text "  \____\___|_|  \___|_.__/|_|   \__,_|_| |_| |_|"
-    echo ""
+    center "   ____              _                          "
+    center "  / ___|___ _ __ ___| |__  _ __ _   _ _ __ ___TM"
+    center " | |   / _ \ '__/ _ \ '_ \| '__| | | | '_ \` _ \."
+    center " | |__|  __/ | |  __/ |_) | |  | |_| | | | | | |"
+    center "  \____\___|_|  \___|_.__/|_|   \__,_|_| |_| |_|"
+    echo
     echo -e "${MAGENTA}"
-    center_text "Interactive AI Code Generation Shell"
-    echo ""
+    center "Interactive AI Code Generation Shell"
+    echo
     echo -e "${GRAY}"
-    center_text "CerebrumTM © 2025 Robert Hall. All rights reserved"
-    echo ""
+    center "CerebrumTM © 2025 Robert Hall. All rights reserved"
+    echo
 }
 
-# Show current settings
 show_settings() {
-    echo -e "${CYAN}Current Settings:${NC}"
-    echo -e "  Model:       ${GREEN}$MODEL${NC}"
-    echo -e "  Language:    ${GREEN}$LANGUAGE${NC}"
-    echo -e "  Max Tokens:  ${GREEN}$MAX_TOKENS${NC}"
-    echo -e "  Temperature: ${GREEN}$TEMPERATURE${NC}"
-    echo ""
+    echo -e "${CYAN}Settings:${NC}"
+    echo "  Model:       $MODEL"
+    echo "  Language:    $LANGUAGE"
+    echo "  Max Tokens:  $MAX_TOKENS"
+    echo "  Temperature: $TEMPERATURE"
+    echo
 }
 
-# Show prompt
-show_prompt() {
-    echo -e "${GRAY}Type your prompt and press Enter. Use :help for commands.${NC}"
-    echo ""
-}
-
-# Show help
 show_help() {
-    echo -e "${CYAN}Cerebrum REPL Commands:${NC}"
-    echo ""
-    echo -e "  ${YELLOW}:help${NC}              Show this help"
-    echo -e "  ${YELLOW}:settings${NC}          Show current settings"
-    echo -e "  ${YELLOW}:model <name>${NC}      Switch model (qwen_7b, codellama_7b)"
-    echo -e "  ${YELLOW}:lang <name>${NC}       Set language (python, javascript, rust, etc.)"
-    echo -e "  ${YELLOW}:tokens <n>${NC}        Set max tokens (1-2048)"
-    echo -e "  ${YELLOW}:temp <n>${NC}          Set temperature (0.0-2.0)"
-    echo -e "  ${YELLOW}:multi${NC}             Toggle multiline mode"
-    echo -e "  ${YELLOW}:clear${NC}             Clear screen"
-    echo -e "  ${YELLOW}:history${NC}           Show history"
-    echo -e "  ${YELLOW}:exit${NC} or ${YELLOW}:quit${NC}     Exit REPL"
-    echo ""
-    echo -e "${GRAY}Just type your prompt to generate code!${NC}"
-    echo ""
+    echo -e "${CYAN}Commands:${NC}"
+    echo "  :help                Show help"
+    echo "  :model <name>        Set model"
+    echo "  :lang <name>         Set language"
+    echo "  :tokens <n>          Set max tokens"
+    echo "  :temp <n>            Set temperature"
+    echo "  :multi               Toggle multiline"
+    echo "  :history             Show recent prompts"
+    echo "  :clear               Clear screen"
+    echo "  :exit                Quit"
+    echo
 }
 
-# Send to API
-generate() {
+# ─────────────────────────────
+# API Check
+# ─────────────────────────────
+
+check_api() {
+    if ! curl -sf "$API_URL/health" >/dev/null; then
+        echo -e "${RED}Cerebrum API not reachable at $API_URL${NC}"
+        echo "Start it with:"
+        echo "  cd /opt/cerebrum-pi && ./start.sh"
+        exit 1
+    fi
+}
+
+# ─────────────────────────────
+# Streaming Generation (KEY FIX)
+# ─────────────────────────────
+
+generate_stream() {
     local prompt="$1"
 
-    # Show thinking indicator
     echo -e "${GRAY}Thinking...${NC}"
 
-    # Call API
-    local response=$(curl -s -X POST "$API_URL/v1/complete" \
+    curl -N -s "$API_URL/v1/complete/stream" \
         -H "Content-Type: application/json" \
         -d "{
-            \"prompt\": $(echo "$prompt" | jq -Rs .),
+            \"prompt\": $(printf '%s' "$prompt" | jq -Rs .),
             \"language\": \"$LANGUAGE\",
             \"max_tokens\": $MAX_TOKENS,
             \"temperature\": $TEMPERATURE
-        }")
+        }" |
+    while IFS= read -r line; do
+        [[ "$line" == data:* ]] || continue
+        payload="${line#data: }"
 
-    # Check for errors
-    if echo "$response" | jq -e '.detail' > /dev/null 2>&1; then
-        local error=$(echo "$response" | jq -r '.detail.error // .detail')
-        echo -e "${RED}Error: $error${NC}"
-        return 1
-    fi
+        if echo "$payload" | jq -e '.token' >/dev/null 2>&1; then
+            echo -n "$(echo "$payload" | jq -r '.token')"
+        elif echo "$payload" | jq -e '.done' >/dev/null 2>&1; then
+            echo
+            break
+        elif echo "$payload" | jq -e '.error' >/dev/null 2>&1; then
+            echo -e "\n${RED}Error:${NC} $(echo "$payload" | jq -r '.message')"
+            break
+        fi
+    done
 
-    # Extract result
-    local result=$(echo "$response" | jq -r '.result // empty')
-    local tokens=$(echo "$response" | jq -r '.tokens_generated // 0')
-    local time=$(echo "$response" | jq -r '.inference_time_seconds // 0')
-    local source=$(echo "$response" | jq -r '.source // "unknown"')
-
-    if [ -z "$result" ]; then
-        echo -e "${RED}No response received${NC}"
-        return 1
-    fi
-
-    # Display result with full-width separator
-    echo ""
-    printf "${GREEN}%${TERM_WIDTH}s${NC}\n" | tr ' ' '-'
-    echo "$result"
-    printf "${GREEN}%${TERM_WIDTH}s${NC}\n" | tr ' ' '-'
-    echo -e "${GRAY}[$tokens tokens, ${time}s, $source]${NC}"
-    echo ""
-
-    # Save to history
-    echo "$prompt" >> "$HISTORY_FILE"
+    echo
+    hr
+    echo
 }
 
-# Process command
-process_command() {
-    local input="$1"
+# ─────────────────────────────
+# Command Handling
+# ─────────────────────────────
 
-    case "$input" in
-        :help|:h)
-            show_help
+handle_command() {
+    case "$1" in
+        :help) show_help ;;
+        :clear) show_banner; show_settings ;;
+        :history)
+            tail -10 "$HISTORY_FILE" 2>/dev/null | nl
             ;;
-        :settings|:set)
-            show_settings
-            ;;
-        :model\ *)
-            MODEL="${input#:model }"
-            echo -e "${GREEN}✓ Model set to: $MODEL${NC}"
-            ;;
-        :lang\ *|:language\ *)
-            LANGUAGE="${input#*\ }"
-            echo -e "${GREEN}✓ Language set to: $LANGUAGE${NC}"
-            ;;
-        :tokens\ *)
-            MAX_TOKENS="${input#:tokens }"
-            echo -e "${GREEN}✓ Max tokens set to: $MAX_TOKENS${NC}"
-            ;;
-        :temp\ *|:temperature\ *)
-            TEMPERATURE="${input#*\ }"
-            echo -e "${GREEN}✓ Temperature set to: $TEMPERATURE${NC}"
-            ;;
-        :multi|:multiline)
+        :model\ *) MODEL="${1#:model }" ;;
+        :lang\ *) LANGUAGE="${1#:lang }" ;;
+        :tokens\ *) MAX_TOKENS="${1#:tokens }" ;;
+        :temp\ *) TEMPERATURE="${1#:temp }" ;;
+        :multi)
             MULTILINE_MODE=!$MULTILINE_MODE
             if $MULTILINE_MODE; then
-                echo -e "${YELLOW}Multiline mode ON. Type :done to submit.${NC}"
+                MULTILINE_FILE=$(mktemp)
+                echo -e "${YELLOW}Multiline ON — :done to submit${NC}"
             else
-                echo -e "${GRAY}Multiline mode OFF${NC}"
+                rm -f "$MULTILINE_FILE"
+                echo -e "${GRAY}Multiline OFF${NC}"
             fi
             ;;
-        :clear|:cls)
-            show_banner
-            show_settings
-            ;;
-        :history|:hist)
-            if [ -f "$HISTORY_FILE" ]; then
-                echo -e "${CYAN}Recent prompts:${NC}"
-                tail -10 "$HISTORY_FILE" | nl
-                echo ""
-            else
-                echo -e "${GRAY}No history yet${NC}"
-            fi
-            ;;
-        :exit|:quit|:q)
-            echo -e "${CYAN}Goodbye! ${NC}"
-            exit 0
-            ;;
-        :*)
-            echo -e "${RED}Unknown command: $input${NC}"
-            echo -e "${GRAY}Type :help for available commands${NC}"
-            ;;
-        *)
-            return 1  # Not a command, treat as prompt
-            ;;
+        :exit|:quit) exit 0 ;;
+        :) return 1 ;;
+        :*) echo -e "${RED}Unknown command${NC}" ;;
+        *) return 1 ;;
     esac
-
     return 0
 }
 
-# Main REPL loop
-repl_loop() {
+# ─────────────────────────────
+# Main Loop
+# ─────────────────────────────
+
+repl() {
     while true; do
-        # Show prompt
         if $MULTILINE_MODE; then
             echo -ne "${YELLOW}... ${NC}"
         else
             echo -ne "${BLUE}>>> ${NC}"
         fi
 
-        # Read input
-        read -r input
+        read -r input || continue
+        [[ -z "$input" ]] && continue
 
-        # Handle empty input
-        if [ -z "$input" ]; then
-            continue
-        fi
-
-        # Multiline mode
         if $MULTILINE_MODE; then
-            if [ "$input" = ":done" ]; then
+            if [[ "$input" == ":done" ]]; then
                 MULTILINE_MODE=false
-                generate "$MULTILINE_BUFFER"
-                MULTILINE_BUFFER=""
-                continue
-            elif [ "$input" = ":cancel" ]; then
-                MULTILINE_MODE=false
-                MULTILINE_BUFFER=""
-                echo -e "${GRAY}Cancelled${NC}"
-                continue
-            else
-                MULTILINE_BUFFER="${MULTILINE_BUFFER}${input}\n"
+                prompt=$(cat "$MULTILINE_FILE")
+                rm -f "$MULTILINE_FILE"
+                generate_stream "$prompt"
+                echo "$prompt" >> "$HISTORY_FILE"
                 continue
             fi
-        fi
-
-        # Check if it's a command
-        if process_command "$input"; then
+            echo "$input" >> "$MULTILINE_FILE"
             continue
         fi
 
-        # Generate code
-        generate "$input"
+        if handle_command "$input"; then
+            continue
+        fi
+
+        generate_stream "$input"
+        echo "$input" >> "$HISTORY_FILE"
     done
 }
 
-# Check if API is available
-check_api() {
-    if ! curl -s "$API_URL/health" > /dev/null 2>&1; then
-        echo -e "${RED}Error: Cerebrum API not available at $API_URL${NC}"
-        echo ""
-        echo "Start Cerebrum first:"
-        echo "  cd /opt/cerebrum-pi"
-        echo "  ./start.sh"
-        echo ""
-        exit 1
-    fi
-}
+# ─────────────────────────────
+# Entry
+# ─────────────────────────────
 
-# Main
-main() {
-    # Check dependencies
-    if ! command -v jq &> /dev/null; then
-        echo "Installing jq..."
-        sudo apt install jq -y
-    fi
-
-    # Check API
-    check_api
-
-    # Show banner
-    show_banner
-    show_settings
-
-    # Start REPL
-    repl_loop
-}
-
-# Run
-main
+check_api
+show_banner
+show_settings
+repl
