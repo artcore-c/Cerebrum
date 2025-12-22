@@ -1,9 +1,8 @@
-#!/bin/bash
-
+# /opt/cerebrum-pi/scripts/cerebrum_repl.sh
+# 
 # Cerebrum Streaming REPL (Optimized)
 # A minimal, text-first interface for AI code generation
-# Save as: /opt/cerebrum-pi/scripts/cerebrum_repl.sh
-# Usage: cerebrum chat  (or  ./cerebrum_repl.sh)
+# Usage: ./cerebrum_repl.sh
 
 set -u
 
