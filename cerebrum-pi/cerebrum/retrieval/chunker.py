@@ -39,7 +39,16 @@ def chunk_text(
     while start < length:
         end = min(start + max_chars, length)
         chunks.append(text[start:end])
+        
+        # Stop at final chunk to prevent infinite loop
+        if end == length:
+            break
+        
         start = end - overlap
+        
+        # Safety: ensure we always make progress
+        if start < 0:
+            start = 0
     
     return chunks
 

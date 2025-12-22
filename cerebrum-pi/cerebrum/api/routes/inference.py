@@ -85,23 +85,41 @@ async def code_completion(request: CodeCompletionRequest):
         logger.info(f"Chunking large prompt: {len(request.prompt)} chars")
     
         chunks = chunk_text(request.prompt)
-        selected_chunks = select_top_chunks(chunks, original_prompt, k=3)  # Use original_prompt
-        assembled_prompt = assemble_prompt(original_prompt, selected_chunks)  # Use original_prompt
-        chunks_used = len(selected_chunks)
     
-        stats = get_assembly_stats(
-            len(original_prompt),
-            chunks_used,
-            len(assembled_prompt)  # Use assembled_prompt length
-        )
+        # Cap k to ensure we actually reduce (leave at least 1 chunk out)
+        k = min(3, len(chunks) - 1)
     
-        logger.info(
-            f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
-            f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
-        )
-    
-        # Update request with assembled prompt
-        request.prompt = assembled_prompt
+        if k <= 0:
+            # Too few chunks to be useful
+            logger.info("Chunking skipped: insufficient chunks")
+        else:
+            # Rank against END of prompt (where instructions typically are)
+            query = original_prompt[-300:]  
+            selected_chunks = select_top_chunks(chunks, query, k=k)
+            assembled_prompt = assemble_prompt(original_prompt, selected_chunks)
+            chunks_used = len(selected_chunks)
+        
+            # Only use chunked version if we actually reduced size meaningfully
+            if len(assembled_prompt) >= len(original_prompt) * 0.9:
+                logger.info(
+                    f"Chunking skipped: insufficient reduction "
+                    f"({len(assembled_prompt)} vs {len(original_prompt)} chars)"
+                )
+            else:
+                stats = get_assembly_stats(
+                    len(original_prompt),
+                    chunks_used,
+                    len(assembled_prompt)
+                )
+            
+                logger.info(
+                    f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
+                    f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
+                )
+            
+                # Update request with assembled prompt
+                request.prompt = assembled_prompt
+
     # Try VPS inference
     try:
         result = await vps.inference(
@@ -189,23 +207,40 @@ async def stream_completion(request: CodeCompletionRequest):
         logger.info(f"Chunking large prompt: {len(request.prompt)} chars")
     
         chunks = chunk_text(request.prompt)
-        selected_chunks = select_top_chunks(chunks, original_prompt, k=3)  # Use original_prompt
-        assembled_prompt = assemble_prompt(original_prompt, selected_chunks)  # Use original_prompt
-        chunks_used = len(selected_chunks)
     
-        stats = get_assembly_stats(
-            len(original_prompt),
-            chunks_used,
-            len(assembled_prompt)  # Use assembled_prompt length
-        )
+        # Cap k to ensure we actually reduce (leave at least 1 chunk out)
+        k = min(3, len(chunks) - 1)
     
-        logger.info(
-            f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
-            f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
-        )
-    
-        # Update request with assembled prompt
-        request.prompt = assembled_prompt
+        if k <= 0:
+            # Too few chunks to be useful
+            logger.info("Chunking skipped: insufficient chunks")
+        else:
+            # Rank against END of prompt (where instructions typically are)
+            query = original_prompt[-300:]
+            selected_chunks = select_top_chunks(chunks, query, k=k)
+            assembled_prompt = assemble_prompt(original_prompt, selected_chunks)
+            chunks_used = len(selected_chunks)
+        
+            # Only use chunked version if we actually reduced size meaningfully
+            if len(assembled_prompt) >= len(original_prompt) * 0.9:
+                logger.info(
+                    f"Chunking skipped: insufficient reduction "
+                    f"({len(assembled_prompt)} vs {len(original_prompt)} chars)"
+                )
+            else:
+                stats = get_assembly_stats(
+                    len(original_prompt),
+                    chunks_used,
+                    len(assembled_prompt)
+                )
+            
+                logger.info(
+                    f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
+                    f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
+                )
+            
+                # Update request with assembled prompt
+                request.prompt = assembled_prompt
 
     async def generate():
         try:

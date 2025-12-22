@@ -1,3 +1,4 @@
+# cerebrum/retrieval/__init__.py
 """Retrieval and chunking utilities"""
 
 from .chunker import chunk_text, should_chunk
