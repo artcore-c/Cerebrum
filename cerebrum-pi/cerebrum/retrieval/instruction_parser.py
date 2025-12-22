@@ -14,7 +14,7 @@ from typing import Tuple
 
 def extract_instruction(prompt: str) -> Tuple[str, str]:
     """
-    Extract instruction from prompt if present.
+    Extract instruction from prompt by scanning from end.
     
     Args:
         prompt: Full prompt text
@@ -23,52 +23,51 @@ def extract_instruction(prompt: str) -> Tuple[str, str]:
         Tuple of (code, instruction)
         If no instruction found, returns (prompt, "")
     """
-    markers = [
-        "# INSTRUCTION:",
-        "# TODO:",
-        "INSTRUCTION:",
-        "TODO:",
-        "# Task:",
-        "Task:"
-    ]
+    lines = prompt.strip().splitlines()
     
-    for marker in markers:
-        if marker in prompt:
-            # Split on LAST occurrence (instruction usually at end)
-            parts = prompt.rsplit(marker, 1)
-            if len(parts) == 2:
-                code = parts[0].strip()
-                instruction = marker + parts[1].strip()
-                return code, instruction
-    
+    # Scan from end to find instruction markers
+    MAX_SCAN_LINES = 12  # only scan last N lines
+
+    for i in range(len(lines) - 1, max(len(lines) - MAX_SCAN_LINES, -1), -1):
+        line = lines[i].strip()
+        if any(line.startswith(m) for m in (
+            "# INSTRUCTION:", "INSTRUCTION:", 
+            "# REFACTOR:", "REFACTOR:",
+            "# TODO:", "TODO:"
+            )):
+            code = "\n".join(lines[:i])
+            instruction = "\n".join(lines[i:])
+            return code.strip(), instruction.strip()
+        
     return prompt, ""
 
-
-def assemble_refactor_prompt(code: str, instruction: str) -> str:
+def assemble_refactor_prompt(code_chunks: list, instruction: str) -> str:
     """
-    Assemble prompt for code refactoring tasks.
+    Assemble prompt for code refactoring with instruction FIRST.
     
-    Forces model to output code, not explanations.
+    Critical: Instruction must come first for base code models.
     
     Args:
-        code: Source code to refactor
+        code_chunks: Selected code chunks
         instruction: Refactoring instruction
         
     Returns:
-        Structured prompt
+        Prompt with instruction prioritized
     """
     if not instruction:
-        return code
+        # No instruction, just join chunks
+        return "\n\n".join(code_chunks)
     
-    return f"""SYSTEM:
-You are an expert Python engineer.
-You must refactor the provided code exactly as instructed.
-Return ONLY valid Python code. No explanations. No comments about what you're doing.
+    # Combine selected code
+    combined_code = "\n\n".join(code_chunks)
+    
+    # Simple, direct format - instruction first, code second
+    return f"""{instruction}
 
-USER INSTRUCTION:
-{instruction}
+Here is the code to refactor:
+```python
+{combined_code}
 
-CODE:
-{code}
-
-REFACTORED CODE:"""
+Refactored code:
+```python
+"""

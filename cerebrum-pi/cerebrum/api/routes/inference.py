@@ -13,19 +13,24 @@ from cerebrum.core.vps_client import (
     VPSUnavailableError,
     VPSInferenceError
 )
-from cerebrum.retrieval import (
-    chunk_text,
-    should_chunk,
-    select_top_chunks,
-    dedupe_chunks,  # NEW
-    assemble_prompt,
-    get_assembly_stats,
-    extract_instruction,  # NEW
-    assemble_refactor_prompt  # NEW
-)
+
+from ._chunking_helper import apply_smart_chunking  
 
 router = APIRouter(tags=["inference"])
 logger = logging.getLogger('CerebrumCM4')
+
+# Model mapping for language-specific routing
+_MODEL_MAP = {
+    "python": "qwen_7b",
+    "javascript": "qwen_7b",
+    "typescript": "qwen_7b",
+    "rust": "codellama_7b",
+    "go": "codellama_7b",
+    "c": "codellama_7b",
+    "cpp": "codellama_7b",
+}
+
+_DEFAULT_MODEL = "qwen_7b"  # Fallback for unknown languages
 
 class CodeCompletionRequest(BaseModel):
     """Request for code completion"""
@@ -67,82 +72,11 @@ async def code_completion(request: CodeCompletionRequest):
     start_time = time.time()
     
     # Determine model based on language
-    model_map = {
-        "python": "qwen_7b",
-        "javascript": "qwen_7b",
-        "typescript": "qwen_7b",
-        "rust": "codellama_7b",
-        "go": "codellama_7b",
-        "c": "codellama_7b",
-        "cpp": "codellama_7b",
-    }
-    
-    model = model_map.get(request.language.lower(), "qwen_7b")
+    model = _MODEL_MAP.get(request.language.lower(), _DEFAULT_MODEL)
     vps = get_vps_client()
-    
-    # Apply chunking if needed
-    original_prompt = request.prompt
-    chunks_used = 0
 
-    # Extract instruction if present (for refactoring tasks)
-    code, instruction = extract_instruction(request.prompt)
-
-    if should_chunk(code):  # Chunk only the code part
-        logger.info(f"Chunking large prompt: {len(code)} chars")
-    
-        chunks = chunk_text(code)
-    
-        # Deduplicate chunks (huge win for repeated code)
-        unique_chunks = dedupe_chunks(chunks)
-        logger.info(f"Deduplication: {len(chunks)} → {len(unique_chunks)} chunks")
-    
-        # Cap k to ensure we actually reduce (leave at least 1 chunk out)
-        k = min(3, len(unique_chunks) - 1)
-    
-        if k <= 0:
-            # Too few chunks to be useful
-            logger.info("Chunking skipped: insufficient unique chunks")
-        else:
-            # Rank against instruction if present, otherwise use end of code
-            query = instruction if instruction else code[-300:]
-            selected_chunks = select_top_chunks(unique_chunks, query, k=k)
-        
-            # Assemble based on whether we have an instruction
-            if instruction:
-                # Refactoring task - use structured prompt
-                assembled_code = "\n\n".join(selected_chunks)
-                assembled_prompt = assemble_refactor_prompt(assembled_code, instruction)
-            else:
-                # Regular task - use standard assembly
-                assembled_prompt = assemble_prompt(code, selected_chunks)
-        
-            chunks_used = len(selected_chunks)
-        
-            # Only use chunked version if we actually reduced size meaningfully
-            if len(assembled_prompt) >= len(original_prompt) * 0.9:
-                logger.info(
-                    f"Chunking skipped: insufficient reduction "
-                    f"({len(assembled_prompt)} vs {len(original_prompt)} chars)"
-                )
-            else:
-                stats = get_assembly_stats(
-                    len(original_prompt),
-                    chunks_used,
-                    len(assembled_prompt)
-                )
-            
-                logger.info(
-                    f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
-                    f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
-                )
-            
-                # Update request with assembled prompt
-                request.prompt = assembled_prompt
-    elif instruction:
-        # Has instruction but doesn't need chunking
-        # Still use structured prompt for better output
-        request.prompt = assemble_refactor_prompt(code, instruction)
-        logger.info("Applied instruction-aware prompt assembly")
+    # Apply smart chunking (all logic in helper)
+    request.prompt, was_chunked = apply_smart_chunking(request.prompt)
 
     # Try VPS inference
     try:
@@ -208,84 +142,13 @@ async def stream_completion(request: CodeCompletionRequest):
     # Protect against oversized prompts
     if len(request.prompt) > 16_000:
         raise HTTPException(413, "Prompt exceeds 16KB limit")
-    
+
     # Determine model
-    model_map = {
-        "python": "qwen_7b",
-        "javascript": "qwen_7b",
-        "typescript": "qwen_7b",
-        "rust": "codellama_7b",
-        "go": "codellama_7b",
-        "c": "codellama_7b",
-        "cpp": "codellama_7b",
-    }
-    
-    model = model_map.get(request.language.lower(), "qwen_7b")
+    model = _MODEL_MAP.get(request.language.lower(), _DEFAULT_MODEL)
     vps = get_vps_client()
-    
-    # Apply chunking if needed
-    original_prompt = request.prompt
-    chunks_used = 0
 
-    # Extract instruction if present (for refactoring tasks)
-    code, instruction = extract_instruction(request.prompt)
-
-    if should_chunk(code):  # Chunk only the code part
-        logger.info(f"Chunking large prompt: {len(code)} chars")
-    
-        chunks = chunk_text(code)
-    
-        # Deduplicate chunks (huge win for repeated code)
-        unique_chunks = dedupe_chunks(chunks)
-        logger.info(f"Deduplication: {len(chunks)} → {len(unique_chunks)} chunks")
-    
-        # Cap k to ensure we actually reduce (leave at least 1 chunk out)
-        k = min(3, len(unique_chunks) - 1)
-    
-        if k <= 0:
-            # Too few chunks to be useful
-            logger.info("Chunking skipped: insufficient unique chunks")
-        else:
-            # Rank against instruction if present, otherwise use end of code
-            query = instruction if instruction else code[-300:]
-            selected_chunks = select_top_chunks(unique_chunks, query, k=k)
-        
-            # Assemble based on whether we have an instruction
-            if instruction:
-                # Refactoring task - use structured prompt
-                assembled_code = "\n\n".join(selected_chunks)
-                assembled_prompt = assemble_refactor_prompt(assembled_code, instruction)
-            else:
-                # Regular task - use standard assembly
-                assembled_prompt = assemble_prompt(code, selected_chunks)
-        
-            chunks_used = len(selected_chunks)
-        
-            # Only use chunked version if we actually reduced size meaningfully
-            if len(assembled_prompt) >= len(original_prompt) * 0.9:
-                logger.info(
-                    f"Chunking skipped: insufficient reduction "
-                    f"({len(assembled_prompt)} vs {len(original_prompt)} chars)"
-                )
-            else:
-                stats = get_assembly_stats(
-                    len(original_prompt),
-                    chunks_used,
-                    len(assembled_prompt)
-                )
-            
-                logger.info(
-                    f"Chunking complete: {stats['original_chars']} → {stats['final_chars']} chars "
-                    f"({stats['chunks_selected']} chunks, {stats['reduction_percent']}% reduction)"
-                )
-            
-                # Update request with assembled prompt
-                request.prompt = assembled_prompt
-    elif instruction:
-        # Has instruction but doesn't need chunking
-        # Still use structured prompt for better output
-        request.prompt = assemble_refactor_prompt(code, instruction)
-        logger.info("Applied instruction-aware prompt assembly")
+    # Apply smart chunking (same logic)
+    request.prompt, was_chunked = apply_smart_chunking(request.prompt)
 
     async def generate():
         try:
