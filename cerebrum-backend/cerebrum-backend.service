@@ -3,12 +3,24 @@ Description=Cerebrum VPS Backend
 After=network.target
 
 [Service]
+CPUQuota=95%
+Nice=10
+TasksMax=50
+MemoryHigh=6000M
+MemoryMax=6500M
+OOMPolicy=stop
+
 Type=simple
 User=unicorn1
 WorkingDirectory=/home/unicorn1/cerebrum-backend
 Environment="PATH=/home/unicorn1/cerebrum-backend/venv/bin"
 EnvironmentFile=/home/unicorn1/cerebrum-backend/.env
-ExecStart=/home/unicorn1/cerebrum-backend/venv/bin/uvicorn vps_server.main:app --host ${VPS_BIND_IP} --port ${CEREBRUM_VPS_PORT}
+ExecStart=/home/unicorn1/cerebrum-backend/venv/bin/uvicorn \
+  vps_server.main:app \
+  --host ${VPS_BIND_IP} \
+  --port ${CEREBRUM_VPS_PORT} \
+  --workers 1
+
 Restart=on-failure
 RestartSec=5
 StandardOutput=append:/home/unicorn1/cerebrum-backend/logs/backend.log

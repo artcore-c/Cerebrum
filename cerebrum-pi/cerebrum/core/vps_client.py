@@ -12,6 +12,7 @@ File: /opt/cerebrum-pi/cerebrum/core/vps_client.py
 
 import os
 import time
+import json
 import logging
 import asyncio # Import asyncio for sleep
 from typing import Optional, Dict, Any
@@ -71,7 +72,7 @@ class VPSClient:
         # Circuit breaker
         self._last_failure_time = 0.0
         self._cooldown_seconds = 10
-        
+
         # Limit concurrent requests
         self._semaphore = asyncio.Semaphore(1)
 
@@ -176,7 +177,7 @@ class VPSClient:
                         self.total_inference_time += elapsed
                         
                         result = response.json()
-                        logger.info(
+                        logger.debug(
                             f"VPS inference successful: {model} "
                             f"({result.get('tokens_generated', 0)} tokens in {elapsed:.2f}s)"
                         )
@@ -236,7 +237,70 @@ class VPSClient:
         self._last_failure_time = time.time()
         logger.error(f"VPS inference failed after {self.max_retries + 1} attempts: {last_error}")
         raise last_error
-
+    
+    async def inference_stream(
+        self,
+        prompt: str,
+        model: str = "qwen_7b",
+        max_tokens: int = 512,
+        temperature: float = 0.2,
+        stop: Optional[list] = None
+    ):
+        """
+        Stream inference tokens from VPS.
+    
+        Yields dict with 'token', 'total_tokens', or 'done', 'error'
+        """
+        # Circuit breaker check
+        if time.time() - self._last_failure_time < self._cooldown_seconds:
+            raise VPSUnavailableError(
+                f"VPS in cooldown (failed recently)"
+            )
+    
+        max_tokens = min(max_tokens, 512)
+    
+        request_data = {
+            "prompt": prompt,
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "stop": stop or []
+        }
+    
+        headers = {
+            "X-API-Key": self.api_key,
+            "Content-Type": "application/json"
+        }
+    
+        try:
+            async with self._client.stream(
+                "POST",
+                f"{self.endpoint}/v1/inference/stream",
+                json=request_data,
+                headers=headers,
+                timeout=None  # No timeout for streaming
+            ) as response:
+            
+                if response.status_code != 200:
+                    raise VPSInferenceError(
+                        f"VPS returned status {response.status_code}"
+                    )
+            
+                # Read SSE stream
+                async for line in response.aiter_lines():
+                    if line.startswith("data: "):
+                        data_str = line[6:]  # Remove "data: " prefix
+                        try:
+                            data = json.loads(data_str)
+                            yield data
+                        except json.JSONDecodeError:
+                            continue
+                        
+        except httpx.ConnectError as e:
+            raise VPSUnavailableError(f"Cannot connect to VPS: {e}")
+        except Exception as e:
+            raise VPSInferenceError(f"Streaming error: {e}")
+    
     async def list_models(self) -> Dict[str, Any]:
         """
         Get list of available models from VPS.

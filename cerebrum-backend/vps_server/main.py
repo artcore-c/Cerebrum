@@ -16,10 +16,11 @@ import psutil
 from typing import Optional, Dict, Any
 from datetime import datetime
 from fastapi import FastAPI, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 import logging
+import json
 
 # Load environment variables
 load_dotenv()
@@ -108,7 +109,6 @@ class HealthResponse(BaseModel):
     ram_available_gb: float
     ram_used_gb: float
     models_in_cache: list[str]
-    # ios_backend_active: bool
     uptime_seconds: float
 
 
@@ -136,17 +136,6 @@ class VPSModelEngine:
         used = mem.used / (1024**3)
         return available, used
 
-    # def is_ios_backend_active(self) -> bool:
-        # """Check if iOS backend is using resources"""
-        # try:
-            # for conn in psutil.net_connections():
-                # if conn.laddr.port == IOS_BACKEND_PORT and conn.status == 'LISTEN':
-                    # # Check if there are active connections
-                    # return True
-        # except (psutil.AccessDenied, AttributeError):
-            # pass
-        # return False
-
     def can_accept_request(self) -> tuple[bool, str]:
         """Check if VPS can accept new inference request"""
         cpu_usage = self.get_cpu_usage()
@@ -157,11 +146,6 @@ class VPSModelEngine:
         available_ram, _ = self.get_ram_info()
         if available_ram < 1.0:  # Less than 1GB available
             return False, f"Insufficient RAM: {available_ram:.2f}GB available"
-
-        # if self.is_ios_backend_active():
-            # # Be more conservative when iOS backend is active
-            # if cpu_usage > 50:
-                # return False, "iOS backend active, reducing load"
 
         return True, "Available"
 
@@ -202,9 +186,9 @@ class VPSModelEngine:
             # Load with llama.cpp
             model = Llama(
                 model_path=model_path,
-                n_ctx=4096,  # Context length
-                n_threads=max(1, psutil.cpu_count(logical=False) - 1),  # Leave 1 core free
-                n_gpu_layers=0,  # CPU only
+                n_ctx=4096,
+                n_threads=CEREBRUM_N_THREADS,  # CRITICAL: force 1 thread on VPS
+                n_gpu_layers=0,
                 verbose=False
             )
 
@@ -314,7 +298,6 @@ async def health_check():
         ram_available_gb=ram_available,
         ram_used_gb=ram_used,
         models_in_cache=list(vps_engine.models.keys()),
-        # ios_backend_active=vps_engine.is_ios_backend_active(),
         uptime_seconds=vps_engine.get_uptime()
     )
 
@@ -322,8 +305,10 @@ async def health_check():
 @app.post("/v1/inference", response_model=InferenceResponse)
 async def inference(
     request: InferenceRequest,
+    http_request: Request,
     x_api_key: str = Header(None, alias="X-API-Key")
 ):
+
     """
     Run inference on a model
 
@@ -340,8 +325,9 @@ async def inference(
             status_code=403,
             detail="Client IP not allowed"
         )
-    
+
     logger.info(f"Inference request: {request.model} - {len(request.prompt)} chars")
+
 
     try:
         # Load model
@@ -393,6 +379,84 @@ async def inference(
             detail=f"Inference failed: {str(e)}"
         )
 
+@app.post("/v1/inference/stream")
+async def inference_stream(
+    request: InferenceRequest,
+    http_request: Request,
+    x_api_key: str = Header(None, alias="X-API-Key")
+):
+    """
+    Stream inference tokens as they're generated
+    
+    Returns Server-Sent Events (SSE) stream
+    """
+    
+    # Same auth as regular inference
+    if x_api_key != CEREBRUM_API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+    
+    if not is_allowed_client(http_request):
+        raise HTTPException(status_code=403, detail="Client IP not allowed")
+    
+    logger.info(f"Streaming inference request: {request.model} - {len(request.prompt)} chars")
+    
+    async def generate():
+        try:
+            # Load model
+            model = vps_engine.load_model(request.model)
+            
+            start_time = time.time()
+            total_tokens = 0
+            
+            # Stream tokens
+            for chunk in model(
+                request.prompt,
+                max_tokens=request.max_tokens,
+                temperature=request.temperature,
+                stop=request.stop or [],
+                echo=False,
+                stream=True  # Enable streaming
+            ):
+                # Extract token from chunk
+                token = chunk['choices'][0]['text']
+                total_tokens += 1
+                
+                # Send as SSE
+                data = {
+                    "token": token,
+                    "total_tokens": total_tokens
+                }
+                yield f"data: {json.dumps(data)}\n\n"
+            
+            # Send completion event
+            inference_time = time.time() - start_time
+            completion = {
+                "done": True,
+                "total_tokens": total_tokens,
+                "inference_time": round(inference_time, 3),
+                "tokens_per_second": round(total_tokens / inference_time, 2)
+            }
+            yield f"data: {json.dumps(completion)}\n\n"
+            
+            # Update stats
+            vps_engine.inference_count[request.model] = \
+                vps_engine.inference_count.get(request.model, 0) + 1
+            
+            logger.info(f"Streaming complete: {total_tokens} tokens in {inference_time:.2f}s")
+            
+        except Exception as e:
+            logger.error(f"Streaming error: {e}")
+            error = {"error": str(e), "done": True}
+            yield f"data: {json.dumps(error)}\n\n"
+    
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
 
 @app.get("/v1/models")
 async def list_models(x_api_key: str = Header(None, alias="X-API-Key")):
@@ -475,10 +539,6 @@ async def get_stats(x_api_key: str = Header(None, alias="X-API-Key")):
                 name: time.isoformat()
                 for name, time in vps_engine.load_times.items()
             }
-        # },
-        # "ios_backend": {
-            # "active": vps_engine.is_ios_backend_active(),
-            # "port": IOS_BACKEND_PORT
         }
     }
 

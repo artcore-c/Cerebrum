@@ -34,4 +34,3 @@ exec venv/bin/uvicorn cerebrum.api.main:app \
     --host "${CEREBRUM_HOST}" \
     --port "${CEREBRUM_PORT}" \
     --log-level info
-
