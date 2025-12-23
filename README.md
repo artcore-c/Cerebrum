@@ -6,7 +6,7 @@
 > powered by VPS inference and intelligent context management.
 
 <p align="center">
-  <img src="docs/images/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
+  <img src="docs/images/Cerebrum_CLI-(SSH).png" alt="Cerebrum_CLI(SSH)" width="400"/>
 </p>
 
 ## What Makes Cerebrum Different
