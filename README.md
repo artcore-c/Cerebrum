@@ -1,31 +1,68 @@
-# Cerebrum Interactive AI Code Generation Shell
+# Cerebrum™ - Distributed AI Code Assistant
 
-Hybrid AI system optimized for Raspberry Pi CM4 + VPS architecture.
+Token-streaming code generation optimized for edge + cloud architecture
 
 <p align="center">
   <img src="docs/images/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
 </p>
+---
+What Makes Cerebrum Unique
 
 ## Architecture
-
 ```
-┌─────────────────────────────────┐
-│  CM4 (Lightweight Orchestrator) │
-│  - FastAPI server               │
-│  - Request routing              │
-│  - Symbolic reasoning (Z3)      │
-│  - RAG/retrieval (FAISS)        │
-└────────────┬────────────────────┘
-             │ HTTP/Tailscale
-             │ Port 7000 → 9000
-┌────────────▼────────────────────┐
-│  VPS (Heavy Inference Backend)  │
-│  - Model loading eg.(llama.cpp) │
-│  - Large model inference        │
-│  - GPU/CPU optimization         │
-└─────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│  Raspberry Pi CM4 (Orchestrator)                        │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  FastAPI Server (Port 7000)                       │  │
+│  │  • Instruction extraction & prompt assembly       │  │
+│  │  • Smart chunking (1000 char blocks, 150 overlap) │  │
+│  │  • Deduplication (hash-based fingerprinting)      │  │
+│  │  • Load shedding (max 2 concurrent requests)      │  │
+│  │  • Request tracking (UUID correlation)            │  │
+│  └───────────────────────────────────────────────────┘  │
+└───────────────────┬─────────────────────────────────────┘
+                    │
+                    │ HTTP/Tailscale (Streaming SSE)
+                    │ Chunked prompts → Token stream
+                    │
+┌───────────────────▼─────────────────────────────────────┐
+│  VPS Inference Backend (Port 9000)                      │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  llama.cpp Runtime                                │  │
+│  │  • Model: qwen-7b-q4.gguf / codellama-7b-q4.gguf  │  │
+│  │  • Inference: ~1.6 tok/s (CPU, single-threaded)   │  │
+│  │  • Connection pool: Persistent httpx client       │  │
+│  │  • Circuit breaker: 10s cooldown on failures      │  │
+│  └───────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
 ```
+Data Flow:
 
+1. User prompt → CM4 extracts instructions
+2. CM4 chunks large code (if >1500 chars)
+3. CM4 deduplicates repeated patterns
+4. CM4 selects top 3 relevant chunks
+5. CM4 assembles instruction-first prompt
+6. VPS streams tokens back via SSE
+7. CM4 proxies stream to client in real-time
+---
+## Real-World Performance
+### Streaming Inference:
+Small prompts (<100 chars): ~17s for 33 tokens (1.9 tok/s)
+Large prompts (8KB): ~182s for 129 tokens (0.7 tok/s) after 62% chunking reduction
+CM4 overhead: <100ms for chunking + routing
+
+### Context Management:
+Input: 8,344 chars (repeated synchronous code)
+After chunking: 3,167 chars (62% reduction)
+Result: Actual async/await refactored code (not TODO lists!)
+
+### Resource Protection:
+Max concurrent: 2 requests (load shedding)
+Circuit breaker: 10s cooldown after VPS failures
+Request timeout: Configurable per endpoint
+Connection pooling: Persistent HTTP client (no repeated initialization)
+---
 ## Project Structure
 
 - **cm4/** - Raspberry Pi CM4 code (orchestrator)
