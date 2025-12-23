@@ -64,10 +64,10 @@ show_banner() {
     center "  \____\___|_|  \___|_.__/|_|   \__,_|_| |_| |_|"
     echo
     echo -e "${MAGENTA}"
-    center "Interactive AI Code Generation Shell"
+    center "Distributed AI Code Assistant"
     echo
     echo -e "${GRAY}"
-    center "CerebrumTM © 2025 Robert Hall. All rights reserved"
+    center "Cerebrum™ © 2025 Robert Hall. All rights reserved"
     echo
 }
 
