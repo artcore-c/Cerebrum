@@ -1,4 +1,4 @@
-# Cerebrum™ - Distributed AI Code Assistant
+# Cerebrum™ - Distributed Interactive AI Code Assistant
 
 ### Token-streaming code generation optimized for edge + cloud architecture
 
