@@ -110,20 +110,20 @@ Data Flow:
 
 ### 1. Start VPS Backend
 ```
-# On VPS
+***# On VPS***
 cd ~/cerebrum-backend
 ./start_vps.sh
 
-# Verify health
+***# Verify health***
 curl http://localhost:9000/health
 ```
 ### 2. Start CM4 Orchestrator
 ```
-# On Raspberry Pi
+***# On Raspberry Pi***
 cd /opt/cerebrum-pi
 ./start.sh
 
-# Verify health
+***# Verify health***
 curl http://localhost:7000/health
 ```
 ### 3. Launch Streaming REPL
