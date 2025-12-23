@@ -101,6 +101,46 @@ Data Flow:
 
 ---
 
+## 🚀 Quick Start
+**Prerequisites**
+- Raspberry Pi CM4 (4GB RAM 0GB eMMC Lite)
+- VPS with 4GB+ RAM (8GB+ for multiple large models running simultainiously)
+- Python 3.11+
+- Deployment Models Pre-installed (See below)
+
+### 1. Start VPS Backend
+```
+# On VPS
+cd ~/cerebrum-backend
+./start_vps.sh
+
+# Verify health
+curl http://localhost:9000/health
+```
+### 2. Start CM4 Orchestrator
+```
+# On Raspberry Pi
+cd /opt/cerebrum-pi
+./start.sh
+
+# Verify health
+curl http://localhost:7000/health
+```
+### 3. Launch Streaming REPL
+```
+cd /opt/cerebrum-pi/scripts
+./cerebrum_repl.sh
+```
+**REPL Commands:**
+```
+>>> :help              Show commands
+>>> :model qwen_7b     Switch model
+>>> :lang python       Set language
+>>> :multi             Toggle multiline mode
+>>> def fibonacci(n):  Generate code!
+```
+---
+
 ## Deployment Model
 
 Cerebrum is composed of **two independently deployed systems**
@@ -168,7 +208,7 @@ Cerebrum/
 
 ## Development Workflow
 
-1. Edit on macOS (VS Code)
+1. Edit on macOS (VS Code + VS Code Insider)
 2. Sync to CM4 (`rsync`)
 3. Sync to VPS (`rsync`)
 4. Test locally via REPL or API
