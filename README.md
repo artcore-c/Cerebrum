@@ -245,6 +245,10 @@ Cerebrum/                        # 🎩 Root
 │   ├── cerebrum-backend.service         # Systemd service
 │   └── requirements.txt                 # Python dependencies
 │
+├── deployment/                      # 🔮 Future: Deployment Automation
+│   ├── scripts/
+│   └── systemd/
+│
 ├── docs/                            # 📚 Documentation
 │   ├── api/
 │   │   └── API.md
@@ -264,6 +268,9 @@ Cerebrum/                        # 🎩 Root
 └── shared/                         # 🧺 Shared Resources
     ├── embeddings/                     # Vector embeddings cache
     ├── knowledge_base/                 # Curated reference material
+    │   ├── code_snippets/
+    │   ├── references/
+    │   └── examples/
     └── models/
         ├── download_scripts/           # Model acquisition utilities
         │   └── download_models.sh
