@@ -203,7 +203,8 @@ Cerebrum/
 └── cerebrum-backend/         # VPS Inference
     ├── vps_server/
     │   └── main.py                   # llama.cpp streaming
-    └── start_vps.sh
+    └── scripts/
+        └── start.sh
 ```
 
 ## Development Workflow
