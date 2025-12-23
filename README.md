@@ -137,7 +137,7 @@ All runtime instructions live in the component-specific READMEs above.
 
 ## 📂 Project Structure
 ```
-cerebrum/
+Cerebrum/
 ├── cerebrum-pi/              # CM4 Orchestrator
 │   ├── cerebrum/
 │   │   ├── api/
