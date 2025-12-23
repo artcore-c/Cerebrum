@@ -5,8 +5,8 @@ Token-streaming code generation optimized for edge + cloud architecture
 <p align="center">
   <img src="docs/images/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
 </p>
----
-What Makes Cerebrum Unique
+
+## What Makes Cerebrum Unique
 
 ## Architecture
 ```
@@ -45,6 +45,7 @@ Data Flow:
 5. CM4 assembles instruction-first prompt
 6. VPS streams tokens back via SSE
 7. CM4 proxies stream to client in real-time
+
 ---
 ## Real-World Performance
 ### Streaming Inference:
@@ -62,6 +63,7 @@ Max concurrent: 2 requests (load shedding)
 Circuit breaker: 10s cooldown after VPS failures
 Request timeout: Configurable per endpoint
 Connection pooling: Persistent HTTP client (no repeated initialization)
+
 ---
 ## Project Structure
 
