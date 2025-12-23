@@ -112,7 +112,7 @@ Data Flow:
 ```
 # On VPS
 cd ~/cerebrum-backend
-./start_vps.sh
+./start.sh
 
 # Verify health
 curl http://localhost:9000/health
@@ -166,7 +166,7 @@ Cerebrum is composed of **two independently deployed systems**
 - Exposes inference and streaming endpoints
 - Tuned for CPU/GPU efficiency
 
-### 📘 Deployment Guide:  
+### 📙 Deployment Guide:  
 [`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
 
 ---
@@ -177,37 +177,100 @@ All runtime instructions live in the component-specific READMEs above.
 
 ## 📂 Project Structure
 ```
-Cerebrum/
-├── cerebrum-pi/              # CM4 Orchestrator
-│   ├── cerebrum/
-│   │   ├── api/
-│   │   │   ├── routes/
-│   │   │   │   ├── inference.py      # Streaming endpoints
-│   │   │   │   ├── _chunking_helper.py  # Smart chunking logic
-│   │   │   │   └── health.py         # Health checks
-│   │   │   └── middleware/
-│   │   │       ├── request_id.py     # UUID correlation
-│   │   │       ├── log_context.py    # Request logging
-│   │   │       └── load_shed.py      # Concurrency limiting
-│   │   ├── core/
-│   │   │   └── vps_client.py         # Connection pooling, circuit breaker
-│   │   └── retrieval/
-│   │       ├── chunker.py            # Text chunking
-│   │       ├── ranker.py             # Relevance ranking + dedup
-│   │       ├── assembler.py          # Prompt assembly
-│   │       └── instruction_parser.py # Instruction extraction
-│   ├── scripts/
-│   │   └── cerebrum_repl.sh          # Streaming CLI
-│   └── start.sh
+Cerebrum/                        # 🎩 Root
 │
-└── cerebrum-backend/         # VPS Inference
-    ├── vps_server/
-    │   └── main.py                   # llama.cpp streaming
-    └── scripts/
-        └── start.sh
+├── cerebrum-pi/                   # 🔹 CM4 Orchestrator (Raspberry Pi)
+│   ├── cerebrum/
+│   │   ├── api/                     # ✨ FastAPI Application (Active)
+│   │   │   ├── main.py                  # Application entry point
+│   │   │   ├── middleware/              # Request processing
+│   │   │   │   ├── request_id.py        # UUID correlation
+│   │   │   │   ├── log_context.py       # Request logging
+│   │   │   │   └── load_shed.py         # Concurrency limiting
+│   │   │   │
+│   │   │   ├── routes/              # 💫 API endpoints
+│   │   │   │   ├── inference.py         # Streaming code completion
+│   │   │   │   ├── _chunking_helper.py  # Smart prompt processing
+│   │   │   │   ├── health.py            # Health checks
+│   │   │   │   ├── models.py            # Model listing
+│   │   │   │   └── stats.py             # System statistics
+│   │   │   │
+│   │   │   └── schemas/             # 🔮 API schemas / future Pydantic models
+│   │   │
+│   │   ├── core/                    # 🪄 VPS Integration (Active)
+│   │   │   └── vps_client.py            # Connection pooling, circuit breaker
+│   │   │
+│   │   ├── retrieval/               # 🧬 Context Management (Active)
+│   │   │   ├── chunker.py               # Text chunking (1000 char blocks)
+│   │   │   ├── ranker.py                # Relevance ranking + deduplication
+│   │   │   ├── assembler.py             # Prompt assembly
+│   │   │   └── instruction_parser.py    # Instruction extraction
+│   │   │
+│   │   ├── orchestration/           # 🔮 Future: Multi-step task coordination
+│   │   ├── reasoning/               # 🔮 Future: Symbolic / constraint-based reasoning
+│   │   ├── tasks/                   # 🔮 Future: Reusable task templates
+│   │   └── utils/                   # 🔮 Future: Shared helper functions
+│   │
+│   ├── scripts/
+│   │   └── cerebrum_repl.sh             # Interactive streaming CLI
+│   │
+│   ├── config/
+│   │   └── cerebrum-tunnel.service      # Tailscale VPN systemd service
+│   │
+│   ├── data/                        # 📄 Runtime data
+│   │   ├── cache/
+│   │   ├── embeddings/
+│   │   └── knowledge_base/
+│   │
+│   ├── tests/                       # 🧪 Test suites
+│   │   ├── test_api/
+│   │   ├── test_core/
+│   │   └── test_integration/
+│   │
+│   ├── start.sh                         # Start orchestrator
+│   ├── stop.sh                          # Stop orchestrator
+│   └── requirements.txt                 # Python dependencies
+│
+├── cerebrum-backend/              # 🔸 VPS Inference Backend
+│   ├── vps_server/                  # ⚙️ Inference Engine (Active)
+│   │   └── main.py                      # FastAPI + llama.cpp streaming
+│   │
+│   ├── scripts/
+│   │   ├── start.sh
+│   │   ├── test.sh                      # Health check tests
+│   │   └── generate_api_key.sh          # API key generation
+│   │
+│   ├── config/                          # Configuration files
+│   ├── logs/                            # Runtime logs
+│   ├── cerebrum-backend.service         # Systemd service
+│   └── requirements.txt                 # Python dependencies
+│
+├── docs/                            # 📚 Documentation
+│   ├── api/
+│   │   └── API.md
+│   ├── architecture/
+│   │   └── ARCHITECTURE.md
+│   ├── diagrams/
+│   │   └── images/
+│   ├── guides/
+│   │   └── DEVELOPMENT.md
+│   └── optimization/
+│       └── PERFORMANCE.md
+│   
+├── scripts/                        # 🔧 Development Tools
+│   ├── sync_to_cm4.sh                  # Rsync to Raspberry Pi
+│   └── sync_to_vps.sh                  # Rsync to VPS
+│
+└── shared/                         # 🧺 Shared Resources
+    ├── embeddings/                     # Vector embeddings cache
+    ├── knowledge_base/                 # Curated reference material
+    └── models/
+        ├── download_scripts/           # Model acquisition utilities
+        │   └── download_models.sh
+        └── lists/                      # Model manifests / allowlists
 ```
 
-## Development Workflow
+## ☕️ Development Workflow
 
 1. Edit on macOS (VS Code + VS Code Insider)
 2. Sync to CM4 (`rsync`)
@@ -217,7 +280,7 @@ Cerebrum/
 
 This workflow enables rapid iteration despite a split architecture.
 
-## Documentation
+## 📚 Documentation
 
 See `docs/` directory for detailed information:
 - [Architecture](./docs/architecture/Architecture.md)
