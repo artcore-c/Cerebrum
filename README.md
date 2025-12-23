@@ -272,6 +272,7 @@ Cerebrum/                        # 🎩 Root
     │   ├── documentation/              # External reference materials
     │   │   └── vendor_docs/            # Official API docs, language specs
     │   └── examples/                   # Sample projects
+    │
     └── models/
         ├── download_scripts/           # Model acquisition utilities
         │   └── download_models.sh
