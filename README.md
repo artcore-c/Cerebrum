@@ -269,7 +269,7 @@ Cerebrum/                        # 🎩 Root
     ├── embeddings/                     # Vector embeddings cache
     ├── knowledge_base/                 # Curated reference material
     │   ├── code_snippets/
-    │   ├── references/
+    │   ├── documentation/
     │   └── examples/
     └── models/
         ├── download_scripts/           # Model acquisition utilities
