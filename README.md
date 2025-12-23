@@ -1,9 +1,8 @@
 # Cerebrum™ - Distributed Interactive AI Code Assistant
 
-### Token-streaming code generation optimized for edge + cloud architecture
+### Token-streaming code generation optimized for Raspberry Pi CM4 + cloud architecture
 
-> Real-time AI code completion and refactoring running on a **Raspberry Pi CM4**, 
-> powered by VPS inference and intelligent context management.
+> Real-time AI code completion and refactoring running on a Clockwork Pi uConsole **Raspberry Pi CM4**, powered by VPS inference and intelligent context management.
 
 <p align="center">
   <img src="docs/images/Cerebrum_CLI-(SSH).jpg" alt="Cerebrum_CLI(SSH)" width="725"/>
