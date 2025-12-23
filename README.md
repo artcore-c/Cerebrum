@@ -268,9 +268,10 @@ Cerebrum/                        # 🎩 Root
 └── shared/                         # 🧺 Shared Resources
     ├── embeddings/                     # Vector embeddings cache
     ├── knowledge_base/                 # Curated reference material
-    │   ├── code_snippets/
-    │   ├── documentation/
-    │   └── examples/
+    │   ├── code_snippets/              # Reusable code examples
+    │   ├── documentation/              # External reference materials
+    │   │   └── vendor_docs/            # Official API docs, language specs
+    │   └── examples/                   # Sample projects
     └── models/
         ├── download_scripts/           # Model acquisition utilities
         │   └── download_models.sh
