@@ -2,8 +2,8 @@
 
 ### Token-streaming code generation optimized for edge + cloud architecture
 
-> **Real-time AI code completion and refactoring running on a Raspberry Pi CM4,** 
-> **powered by VPS inference and intelligent context management.**
+> Real-time AI code completion and refactoring running on a **Raspberry Pi CM4**, 
+> powered by VPS inference and intelligent context management.
 
 <p align="center">
   <img src="docs/images/CerebrumGUI-(SSH).png" alt="Cerebrum GUI (SSH)" width="400"/>
@@ -12,22 +12,22 @@
 ## What Makes Cerebrum Different
 
 **Streaming-First Design**
-Token-by-token Server-Sent Events (SSE) for real-time code generation feedback
+> Token-by-token Server-Sent Events (SSE) for real-time code generation feedback
 
 **Intelligent Context Management**
-Smart chunking reduces 8KB+ prompts by up to 62% while preserving refactoring instructions
+> Smart chunking reduces 8KB+ prompts by up to 62% while preserving refactoring instructions
 
 **Edge Orchestration**
-Raspberry Pi CM4 handles routing, chunking, and request coordination with <100ms overhead
+> Raspberry Pi CM4 handles routing, chunking, and request coordination with <100ms overhead
 
 **Production-Grade Resilience**
-Circuit breakers, connection pooling, load shedding, and request correlation IDs throughout
+> Circuit breakers, connection pooling, load shedding, and request correlation IDs throughout
 
 **Language-Aware Model Routing**
-Automatic selection between Qwen-7B (Python/JS) and CodeLLaMA-7B (Rust/C/C++) per request
+> Automatic selection between Qwen-7B (Python/JS) and CodeLLaMA-7B (Rust/C/C++) per request
 
 **Lightweight CLI Interface**
-Streaming REPL with multiline support, command history, and live token display
+> Streaming REPL with multiline support, command history, and live token display
 
 ## Architecture
 ```
@@ -70,35 +70,35 @@ Data Flow:
 ---
 ## Real-World Performance and Capabilities
 **Intelligent Prompt Handling**
-Instruction extraction (e.g. refactor / rewrite / TODO directives)
-Instruction-first prompt assembly for base code models
-Automatic fallback to raw prompts when transformation is not beneficial
+- Instruction extraction (e.g. refactor / rewrite / TODO directives)
+- Instruction-first prompt assembly for base code models
+- Automatic fallback to raw prompts when transformation is not beneficial
 
 **Smart Chunking & Deduplication**
-Chunks only when prompts exceed safe thresholds
-Deduplicates overlapping code blocks
-Uses task-aware ranking (instruction-driven, not naive similarity)
-Skips chunking entirely when reduction is insignificant
+- Chunks only when prompts exceed safe thresholds
+- Deduplicates overlapping code blocks
+- Uses task-aware ranking (instruction-driven, not naive similarity)
+- Skips chunking entirely when reduction is insignificant
 
 **Streaming Inference:**
-Small prompts (<100 chars): ~17s for 33 tokens (1.9 tok/s)
-Large prompts (8KB): ~182s for 129 tokens (0.7 tok/s) after 62% chunking reduction
-CM4 overhead: <100ms for chunking + routing
+- Small prompts (<100 chars): ~17s for 33 tokens (1.9 tok/s)
+- Large prompts (8KB): ~182s for 129 tokens (0.7 tok/s) after 62% chunking reduction
+- CM4 overhead: <100ms for chunking + routing
 
 **Context Management:**
-Input: 8,344 chars (repeated synchronous code)
-After chunking: 3,167 chars (62% reduction)
-Result: Actual async/await refactored code (not TODO lists!)
+- Input: 8,344 chars (repeated synchronous code)
+- After chunking: 3,167 chars (62% reduction)
+- Result: Actual async/await refactored code (not TODO lists!)
 
 **Resource-Aware Design:**
-Max concurrent: 2 requests (load shedding)
-Circuit breaker: 10s cooldown after VPS failures
-Request timeout: Configurable per endpoint
-Connection pooling: Persistent HTTP client (no repeated initialization)
+- Max concurrent: 2 requests (load shedding)
+- Circuit breaker: 10s cooldown after VPS failures
+- Request timeout: Configurable per endpoint
+- Connection pooling: Persistent HTTP client (no repeated initialization)
 
 **Interactive REPL + API**
-Bash-based interactive shell for fast iteration
-Full FastAPI surface for automation and tooling
+- Bash-based interactive shell for fast iteration
+- Full FastAPI surface for automation and tooling
 
 ---
 
@@ -106,7 +106,7 @@ Full FastAPI surface for automation and tooling
 
 Cerebrum is composed of **two independently deployed systems**
 
-### 🔹 CM4 Orchestrator (Raspberry Pi)
+### CM4 Orchestrator (Raspberry Pi)
 
 **The CM4 never runs large models. It decides *what* to send, *how much* to send,** 
 **and *how* to stream results back efficiently.**
@@ -114,12 +114,12 @@ Cerebrum is composed of **two independently deployed systems**
 - Handles all user interaction
 - Enforces safety and performance constraints
 
-### Deployment Guide:  
+### 📘 Deployment Guide:  
 [`cerebrum-pi/README.md`](./cerebrum-pi/README.md)
 
 ---
 
-### 🔹 VPS Inference Backend
+### VPS Inference Backend
 
 **Runs heavy LLM inference using `llama.cpp` with strict resource controls**
 - The backend supports multiple GGUF models via llama.cpp-compatible runtimes
@@ -127,7 +127,7 @@ Cerebrum is composed of **two independently deployed systems**
 - Exposes inference and streaming endpoints
 - Tuned for CPU/GPU efficiency
 
-### Deployment Guide:  
+### 📘 Deployment Guide:  
 [`cerebrum-backend/README.md`](./cerebrum-backend/README.md)
 
 ---
@@ -145,22 +145,6 @@ All runtime instructions live in the component-specific READMEs above.
 5. Iterate without redeploying the full system
 
 This workflow enables rapid iteration despite a split architecture.
-
-## Components
-
-### CM4 (Port 7000)
-- Lightweight orchestration
-- API endpoints
-- Request routing
-- Symbolic reasoning (Z3)
-- Vector search (FAISS)
-
-### VPS (Port 9000)
-- Heavy model inference
-- Multi-model GGUF support (e.g. Qwen, CodeLLaMA, DeepSeek)
-- llama.cpp-compatible backends
-- Model caching and lifecycle control
-- Resource management and isolation
 
 ## Documentation
 
