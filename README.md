@@ -135,6 +135,37 @@ Cerebrum is composed of **two independently deployed systems**
 The root of this repository is **not directly executable**.  
 All runtime instructions live in the component-specific READMEs above.
 
+## 📂 Project Structure
+```
+cerebrum/
+├── cerebrum-pi/              # CM4 Orchestrator
+│   ├── cerebrum/
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── inference.py      # Streaming endpoints
+│   │   │   │   ├── _chunking_helper.py  # Smart chunking logic
+│   │   │   │   └── health.py         # Health checks
+│   │   │   └── middleware/
+│   │   │       ├── request_id.py     # UUID correlation
+│   │   │       ├── log_context.py    # Request logging
+│   │   │       └── load_shed.py      # Concurrency limiting
+│   │   ├── core/
+│   │   │   └── vps_client.py         # Connection pooling, circuit breaker
+│   │   └── retrieval/
+│   │       ├── chunker.py            # Text chunking
+│   │       ├── ranker.py             # Relevance ranking + dedup
+│   │       ├── assembler.py          # Prompt assembly
+│   │       └── instruction_parser.py # Instruction extraction
+│   ├── scripts/
+│   │   └── cerebrum_repl.sh          # Streaming CLI
+│   └── start.sh
+│
+└── cerebrum-backend/         # VPS Inference
+    ├── vps_server/
+    │   └── main.py                   # llama.cpp streaming
+    └── start_vps.sh
+```
+
 ## Development Workflow
 
 1. Edit on macOS (VS Code)
