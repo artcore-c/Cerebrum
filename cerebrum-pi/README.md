@@ -1,6 +1,6 @@
 # Cerebrum CM4 Orchestrator
 
-Intelligent code generation system running on Raspberry Pi CM4.
+> Intelligent code generation system running on Raspberry Pi CM4
 
 ## Architecture
 
@@ -102,7 +102,7 @@ curl -N -X POST http://localhost:7000/v1/complete/stream \
 ```
 
 **Response:** Server-Sent Events (SSE)
-> You should see something like
+> You should see something like this
 ```bash
 data: {"token": "import", "total_tokens": 1}
 data: {"token": " asyncio", "total_tokens": 2}
