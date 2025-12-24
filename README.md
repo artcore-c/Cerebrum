@@ -46,9 +46,9 @@
                     │ Chunked prompts → Token stream
                     │
 ┌───────────────────▼─────────────────────────────────────┐
-│  VPS Inference Backend (Port 9000)                      │
+│  VPS (Inference) Backend                                │
 │  ┌───────────────────────────────────────────────────┐  │
-│  │  llama.cpp Runtime                                │  │
+│  │  llama.cpp Runtime (Port 9000)                    │  │ 
 │  │  • Model: qwen-7b-q4.gguf / codellama-7b-q4.gguf  │  │
 │  │  • Inference: ~1.6 tok/s (CPU, single-threaded)   │  │
 │  │  • Connection pool: Persistent httpx client       │  │
