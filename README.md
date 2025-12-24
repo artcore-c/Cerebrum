@@ -181,14 +181,14 @@ Cerebrum/                        # 🎩 Root
 │
 ├── cerebrum-pi/                   # 🔹 CM4 Orchestrator (Raspberry Pi)
 │   ├── cerebrum/
-│   │   ├── api/                     # ✨ FastAPI Application (Active)
+│   │   ├── api/                     # 💫 FastAPI Application (Active)
 │   │   │   ├── main.py                  # Application entry point
 │   │   │   ├── middleware/              # Request processing
 │   │   │   │   ├── request_id.py        # UUID correlation
 │   │   │   │   ├── log_context.py       # Request logging
 │   │   │   │   └── load_shed.py         # Concurrency limiting
 │   │   │   │
-│   │   │   ├── routes/              # 💫 API endpoints
+│   │   │   ├── routes/              # ✨ API endpoints
 │   │   │   │   ├── inference.py         # Streaming code completion
 │   │   │   │   ├── _chunking_helper.py  # Smart prompt processing
 │   │   │   │   ├── health.py            # Health checks
