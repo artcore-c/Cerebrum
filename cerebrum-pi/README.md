@@ -2,9 +2,17 @@
 
 Intelligent code generation system running on Raspberry Pi CM4
 
+## Prerequisite: VPS Backend
+
+The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
+
+Before proceeding, ensure the VPS backend is installed, running, and that you have generated a `CEREBRUM_API_KEY`.
+
+📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
+
 ## Architecture
 
-```bash
+```text
 ┌──────────────────────────────┐        ┌──────────────────────────────┐
 │  CM4 Orchestrator            │        │  VPS Inference Backend       │
 │  (FastAPI :7000)             │  SSE   │  (llama.cpp :9000)           │
@@ -14,6 +22,14 @@ Intelligent code generation system running on Raspberry Pi CM4
 │  • Request routing           │        │  • Resource protection       │
 └──────────────────────────────┘        └──────────────────────────────┘
 ```
+## How It Works (Overview)
+
+The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
+
+For a detailed breakdown of Cerebrum’s internal design and algorithms, see:
+
+📚 [ARCHITECTURE.md](../docs/architecture/ARCHITECTURE.md)
+
 ## Installation
 
 On the Raspberry Pi, clone or sync the Cerebrum repository and install Python dependencies:
@@ -35,7 +51,7 @@ sudo nano .env
 # This key must match the `CEREBRUM_API_KEY` you generated on the VPS backend.
 ```
 
-2. ***Start VPS Backend***
+2. **Start VPS Backend**
 ```bash
 # On VPS
 cd ~/cerebrum-backend
@@ -102,7 +118,7 @@ curl -N -X POST http://localhost:7000/v1/complete/stream \
 ```
 
 **Response:** Server-Sent Events (SSE)
-> You should see something like this
+> Example output: you should see something like this...
 ```bash
 data: {"token": "import", "total_tokens": 1}
 data: {"token": " asyncio", "total_tokens": 2}
@@ -122,39 +138,39 @@ curl http://localhost:7000/v1/stats
 
 ## File Structure
 
-```bash
+```text
 /opt/cerebrum-pi/
 ├── cerebrum/
 │   ├── api/
-│   │   ├── main.py             # Main API server
+│   │   ├── main.py                  # Main API server
 │   │   ├── middleware
 │   │   │   ├── __init__.py
-│   │   │   ├── load_shed.py
-│   │   │   ├── log_context.py
-│   │   │   └── request_id.py
+│   │   │   ├── load_shed.py         # Concurrency limiting
+│   │   │   ├── log_context.py       # Request logging
+│   │   │   └── request_id.py        # UUID correlation
 │   │   └── routes
 │   │       ├── __init__.py
-│   │       ├── _chunking_helper.py
-│   │       ├── health.py
-│   │       ├── inference.py
-│   │       ├── models.py
-│   │       └── stats.py
+│   │       ├── _chunking_helper.py  # Smart chunking logic
+│   │       ├── health.py            # Health checks
+│   │       ├── inference.py         # Streaming endpoints
+│   │       ├── models.py            # Model listing
+│   │       └── stats.py             # System statistics
 │   ├── core/
-│   │   └── vps_client.py       # VPS communication, circuit breaker
-│   ├── retrieval/              # Chunking, ranking, prompt assembly
+│   │   └── vps_client.py            # Connection pooling, circuit breaker
+│   ├── retrieval/              
 │   │   ├── __init__.py
-│   │   ├── assembler.py
-│   │   ├── chunker.py
-│   │   ├── instruction_parser.py
-│   │   └── ranker.py
+│   │   ├── assembler.py.            # Prompt assembly
+│   │   ├── chunker.py               # Text chunking
+│   │   ├── instruction_parser.py    # Instruction extraction
+│   │   └── ranker.py                # Relevance ranking + dedup
 │   └── ...
 ├── scripts/
-│   └── cerebrum_repl.sh        # Interactive streaming CLI
-├── .env                        # Configuration
-├── start.sh                    # Start server
-├── stop.sh                     # Stop server
-├── test.sh                     # Full system test
-└── test_vps.sh                 # Quick VPS test
+│   └── cerebrum_repl.sh             # Interactive streaming CLI
+├── .env                             # Configuration
+├── start.sh                         # Start server
+├── stop.sh                          # Stop server
+├── test.sh                          # Full system test
+└── test_vps.sh                      # Quick VPS test
 ```
 **Active Components:**
 - `api/` - All endpoints, middleware, routing
