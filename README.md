@@ -270,7 +270,7 @@ Cerebrum/                        # 🎩 Root
     ├── knowledge_base/                 # Curated reference material
     │   ├── code_snippets/              # Reusable code examples
     │   ├── documentation/              # External reference materials
-    │   │   └── vendor_docs/            # Official API docs, language specs
+    │   │   └── vendor_docs/            # Third-party API docs, language specs
     │   └── examples/                   # Sample projects
     │
     └── models/
@@ -281,13 +281,13 @@ Cerebrum/                        # 🎩 Root
 
 ## ☕️ Development Workflow
 
-1. Edit on macOS (VS Code + VS Code Insider)
+1. Edit on Posix (VS Code + VS Code Insider)
 2. Sync to CM4 (`rsync`)
 3. Sync to VPS (`rsync`)
 4. Test locally via REPL or API
 5. Iterate without redeploying the full system
 
-This workflow enables rapid iteration despite a split architecture.
+This workflow enables rapid iteration despite building with a hybrid architecture.
 
 ## 📚 Documentation
 
@@ -311,8 +311,10 @@ Built with:
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Efficient LLM inference
 - [httpx](https://www.python-httpx.org/) - Modern HTTP client with connection pooling
 - [Qwen](https://github.com/QwenLM/Qwen) - Alibaba's excellent code model
+- [Debian Project](https://www.debian.org/) — Bookworm base system foundation  
+- [Raspberry Pi](https://www.raspberrypi.com/) is a trademark of Raspberry Pi Ltd
 
-Inspired by the challenge of running production AI on edge devices.
+Inspired by the challenge of running production AI on a Raspberry Pi.
 
 ---
 
