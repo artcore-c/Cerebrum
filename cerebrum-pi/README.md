@@ -26,9 +26,9 @@ Before proceeding, ensure the VPS backend is installed, running, and that you ha
 
 The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
 
-For a detailed breakdown of Cerebrum’s internal design and algorithms, see:
+For a detailed breakdown of Cerebrum’s internal design and algorithms,
 
-📚 [ARCHITECTURE.md](../docs/architecture/ARCHITECTURE.md)
+📚 See: docs/[architecture](../docs/architecture/ARCHITECTURE.md)
 
 ## Installation
 
