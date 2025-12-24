@@ -294,8 +294,8 @@ This workflow enables rapid iteration despite building with a hybrid architectur
 See `docs/` directory for detailed information:
 - [API](./docs/api/API.md) - Available endpoints, request formats, and streaming behavior
 - [Architecture](./docs/architecture/ARCHITECTURE.md) - System design, data flow, and component boundaries
-- [Development](./docs/guides/DEVELOPMENT.md) — Local workflow, testing, and contribution notes
-- [Optimization](./docs/optimization/PERFORMANCE.md) — Performance characteristics and tuning considerations
+- [Development](./docs/guides/DEVELOPMENT.md) - Local workflow, testing, and contribution notes
+- [Optimization](./docs/optimization/PERFORMANCE.md) - Performance characteristics and tuning considerations
 
 ## License
 
@@ -312,7 +312,7 @@ Built with:
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Efficient LLM inference
 - [httpx](https://www.python-httpx.org/) - Modern HTTP client with connection pooling
 - [Qwen](https://github.com/QwenLM/Qwen) - Alibaba's excellent code model
-- [Debian Project](https://www.debian.org/) — Bookworm base system foundation  
+- [Debian Project](https://www.debian.org/) - Bookworm base system foundation  
 - [Raspberry Pi](https://www.raspberrypi.com/) is a trademark of Raspberry Pi Ltd
 
 Inspired by the challenge of running production AI on a Raspberry Pi.
