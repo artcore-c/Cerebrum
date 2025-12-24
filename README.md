@@ -292,8 +292,9 @@ This workflow enables rapid iteration despite building with a hybrid architectur
 ## 📚 Documentation
 
 See `docs/` directory for detailed information:
-- [Architecture](./docs/architecture/Architecture.md)
 - [API Reference](./docs/api/API.md)
+- [Architecture](./docs/architecture/ARCHITECTURE.md)
+- [Development](./docs/guides/DEVELOPMENT.md)
 - [Optimization](./docs/optimization/PERFORMANCE.md)
 
 ## License
