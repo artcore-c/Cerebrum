@@ -1,6 +1,8 @@
 # Cerebrum VPS Backend
 
-Lightweight inference backend for heavy model computation.
+Lightweight inference backend for heavy model computation, designed to run on a VPS and serve streamed responses to a remote orchestrator.
+
+This service is intended to be accessed only by trusted clients (e.g. the Cerebrum orchestrator) over a private network such as Tailscale.
 
 ## Quick Start
 
@@ -73,7 +75,6 @@ Edit `.env`:
 - `VPS_BIND_IP` - Local Host (127.0.0.1)
 - `CEREBRUM_VPS_PORT` - Port (9000)
 - `MAX_CPU_PERCENT` - Max CPU before rejecting requests (70)
-- `IOS_BACKEND_PORT` - iOS backend port to monitor (8000)
 
 ## Model Management
 
@@ -85,6 +86,8 @@ curl -X POST -H "X-API-Key: YOUR_KEY" http://127.0.0.1:9000/v1/cleanup
 ```
 
 ## Monitoring
+
+Logs are written locally to the `logs/` directory unless overridden by systemd.
 
 ```bash
 # Watch system resources
@@ -99,13 +102,11 @@ curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:9000/v1/stats | jq
 - API key authentication required for all inference endpoints
 - Health endpoint is public (for monitoring)
 - Binds to Tailscale IP only (not public)
-- Respects iOS backend priority (reduces load when active)
 
 ## Resource Protection
 
 - Automatically rejects requests when CPU > 70%
 - Automatically rejects when RAM < 1GB available
-- Prioritizes iOS backend (reduces threshold to 50% when active)
 - Models auto-unload after inactivity
 
 ## Troubleshooting
