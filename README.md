@@ -292,10 +292,10 @@ This workflow enables rapid iteration despite building with a hybrid architectur
 ## 📚 Documentation
 
 See `docs/` directory for detailed information:
-- [API Reference](./docs/api/API.md)
-- [Architecture](./docs/architecture/ARCHITECTURE.md)
-- [Development](./docs/guides/DEVELOPMENT.md)
-- [Optimization](./docs/optimization/PERFORMANCE.md)
+- [API](./docs/api/API.md) - Available endpoints, request formats, and streaming behavior
+- [Architecture](./docs/architecture/ARCHITECTURE.md) - System design, data flow, and component boundaries
+- [Development](./docs/guides/DEVELOPMENT.md) — Local workflow, testing, and contribution notes
+- [Optimization](./docs/optimization/PERFORMANCE.md) — Performance characteristics and tuning considerations
 
 ## License
 
