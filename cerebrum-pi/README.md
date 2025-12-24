@@ -28,7 +28,7 @@ The CM4 Orchestrator performs intelligent prompt preparation before forwarding r
 
 For a detailed breakdown of Cerebrum’s internal design and algorithms,
 
-📚 See: docs/[architecture](../docs/architecture/ARCHITECTURE.md)
+📚 See: docs/[`architecture`](../docs/architecture/ARCHITECTURE.md)
 
 ## Installation
 
