@@ -1,14 +1,18 @@
 # Cerebrum VPS Backend
 
-Lightweight inference backend for heavy model computation, designed to run on a VPS and serve streamed responses to a remote orchestrator.
-
-This service is intended to be accessed only by trusted clients (e.g. the Cerebrum orchestrator) over a private network such as Tailscale.
+High-performance inference engine for heavy model computation for a distributed AI code generation system
 
 ## Overview
 
-The Cerebrum VPS Backend runs on a virtual private server and is responsible for all large language model inference. It is designed to be accessed remotely by the CM4 Orchestrator over a private network (such as Tailscale) and is not intended to be exposed publicly.
+The Cerebrum VPS Backend transforms a budget VPS into a dedicated AI inference server. It handles all heavy model computation while the CM4 Orchestrator manages routing, context, and coordination. Designed for private network access (Tailscale recommended), this backend focuses exclusively on one task: fast, efficient token generation.
 
-All commands in this guide are assumed to be run **on the VPS itself**, either via SSH or a remote console.
+**Core capabilities:**
+- Stream-optimized inference via llama.cpp
+- On-demand model loading and automatic unloading
+- Built-in resource protection (CPU/RAM limits)
+- API key authentication for trusted clients only
+
+Think of it as the computational workhorse, no UI, no complexity, just reliable model execution accessible only to your orchestrator.
 
 ## Accessing the VPS
 
@@ -249,6 +253,8 @@ curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:9000/v1/stats | jq
 
 ## Security
 
+This service is intended to be accessed only by trusted clients (e.g. the Cerebrum orchestrator) over a private network such as Tailscale.
+
 - API key authentication required for all inference endpoints
 - Health endpoint is public (for monitoring)
 - Intended to bind only to localhost or a private interface (e.g. Tailscale)
@@ -291,3 +297,13 @@ free -h
 # Unload models manually
 curl -X POST -H "X-API-Key: KEY" http://127.0.0.1:9000/v1/unload/model_name
 ```
+
+---
+
+## What's Next?
+
+With the VPS backend running, you're ready to set up the CM4 Orchestrator:
+
+📘 **CM4 Setup Guide:** [`cerebrum-pi/README.md`](../cerebrum-pi/README.md)
+
+The orchestrator handles all user interaction, prompt preparation, and request coordination—transforming your Raspberry Pi into an intelligent AI control plane powered by this backend.
