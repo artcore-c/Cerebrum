@@ -49,6 +49,32 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+## Model Installation
+
+The Cerebrum VPS Backend uses **prebuilt GGUF models** stored locally on the VPS.  
+Models are **not downloaded or built automatically** at runtime.
+
+When you clone the Cerebrum repository, the backend expects model files to reside in the `cerebrum-backend/models/` directory.
+
+Models are loaded on-demand when requested by the CM4 Orchestrator and cached in RAM until they are unloaded or become idle.
+
+### Supported Models
+
+Cerebrum is designed to work with `llama.cpp`-compatible GGUF models.  
+The repository is commonly used with models such as:
+
+- Qwen 7B (quantized)
+- CodeLLaMA 7B / 13B (quantized)
+- WizardCoder
+- DeepSeek
+
+Exact model selection depends on available system resources.
+
+### Model Paths (Important)
+
+At present, model file paths are defined directly in the backend code:
+
+📄 [`cerebrum-backend/vps_server/main.py`](../cerebrum-backend/vps_server/main.py)
 
 ## Quick Start
 
@@ -70,7 +96,7 @@ sudo nano .env
 
 Edit `.env`:
 - `CEREBRUM_API_KEY` - API authentication key
-- `CEREBRUM_N_THREADS=1` - 
+- `CEREBRUM_N_THREADS=1` - Number of CPU threads allocated to model inference
 - `VPS_BIND_IP` - Local Host (127.0.0.1)
 - `CEREBRUM_VPS_PORT` - Port (9000)
 - `MAX_CPU_PERCENT` - Max CPU before rejecting requests (70)
@@ -83,7 +109,7 @@ Edit `.env`:
 # Authentication
 CEREBRUM_API_KEY=your-api-key-here
 
-#
+# Advanced users may increase this value on higher-core VPS instances, but doing so will increase CPU usage proportionally.
 CEREBRUM_N_THREADS=1
 
 # Network (bind locally; access via tunnel or Tailscale)
