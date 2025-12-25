@@ -8,7 +8,7 @@ The CM4 Orchestrator transforms a **Raspberry Pi** into an intelligent AI coordi
 
 **The CM4 Orchestrator provides:**
 - **Prompt intelligence** - Extracts instructions, chunks large code, deduplicates patterns
-- **Smart routing** - Language-aware model selection (Qwen for Python/JS, CodeLLaMA for Rust/C)  
+- **Smart routing** - Language-aware model selection (Qwen for Python/JS, CodeLLaMA for Rust/C/C++)  
 - **Real-time coordination** - SSE streaming, concurrency limits, request tracking
 - **Production resilience** - Circuit breakers, load shedding, correlation IDs
 
