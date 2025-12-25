@@ -70,7 +70,6 @@ cd /opt/cerebrum-pi
 
 4. **Test**
 ```bash
-cd /opt/cerebrum-pi
 ./test.sh
 ```
 
