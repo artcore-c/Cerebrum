@@ -104,19 +104,19 @@ cd ~/Cerebrum/cerebrum-backend/scripts
 
 The backend is configured via a `.env` file located in the `cerebrum-backend/` directory.
 
-**Create or edit the file**:
-```bash
-cd ~/Cerebrum/cerebrum-backend
-sudo nano .env
-```
-
-Edit `.env`:
+**This example shows the values you'll need to add when you edit** `.env`:
 - `CEREBRUM_API_KEY=` API authentication key (Your_API_Key)
 - `CEREBRUM_N_THREADS=` Number of CPU threads allocated to model inference (1)
 - `VPS_BIND_IP=` Local Host (127.0.0.1)
 - `CEREBRUM_VPS_PORT=` Port (9000)
 - `MAX_CPU_PERCENT=` Max CPU before rejecting requests (70)
 
+**Create or edit the file**:
+```bash
+cd ~/Cerebrum/cerebrum-backend
+sudo nano .env
+```
+**copy the following and paste into** `.env`**, then add your API Key**
 ```bash
 # VPS Configuration
 # Cerebrum VPS Backend - Example Configuration
@@ -138,6 +138,12 @@ MAX_CPU_PERCENT=70
 # Optional hardening: allow only a specific client IP
 # ALLOWED_CM4_IP=100.x.y.z
 ```
+**Save and exit**:
+
+Press `Ctrl+O` to save, then `Enter` to confirm
+
+Press `Ctrl+X` to exit.
+
 **Verify configuration**:
 ```bash
 grep CEREBRUM_API_KEY .env
