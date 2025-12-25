@@ -72,7 +72,7 @@ Exact model selection depends on available system resources.
 
 ### Model Paths (Important)
 
-Model file paths are defined directly in the backend code in the file `main.py`:
+Model file paths are defined directly in the `cerebrum-backend/` VPS code in the file `main.py`:
 
 📄 see: [`cerebrum-backend/vps_server/main.py`](../cerebrum-backend/vps_server/main.py)
 
