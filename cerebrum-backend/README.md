@@ -95,22 +95,31 @@ You **must update these paths** to match:
 
 This explicit mapping keeps model loading predictable and avoids accidental exposure of arbitrary filesystem paths.
 
-### Expected Directory Layout
-
-After cloning the repository, your backend directory should look like this:
+### File Structure
 
 ```text
 cerebrum-backend/
-├── models/
+├── cerebrum-backend.service   # systemd service definition
+├── .env                       # runtime configuration
+├── logs/                      # runtime logs
+│   ├── backend.log
+│   └── error.log
+├── models/                    # GGUF model files
 │   ├── qwen-7b-q4.gguf
-│   ├── codellama-7b-q4.gguf
-│   └── ...
-├── vps_server/
-│   └── main.py
-├── scripts/
-├── start.sh
-└── .env
+│   └── codellama-7b-q4.gguf
+├── scripts/                   # management scripts
+│   ├── generate_api_key.sh
+│   ├── start.sh
+│   └── test.sh
+├── venv/                      # isolated Python environment
+└── vps_server/                # FastAPI inference service
+    ├── main.py
+    └── __init__.py
 ```
+**Active Components:**
+- `venv/` - Python Virtual Environment
+- `models/` - Selected model(s)
+- `vps_server/` - Heavy inference
 
 ## 🚀 Quick Start
 
