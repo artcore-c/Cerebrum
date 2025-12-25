@@ -65,17 +65,29 @@ For the full list of dependencies,
 
 ## Installation
 
-On the Raspberry Pi, clone or sync the Cerebrum repository and install Python dependencies:
+On the Raspberry Pi, clone or sync the Cerebrum repository and install Python dependencies.
 
+1. **Clone Repository**
+> **Note:** The Cerebrum repository contains both the CM4 Orchestrator and the VPS backend.  
+> These instructions assume you are working from the **CM4 Orchestrator directory** (`cerebrum-pi/`).
+```bash
+cd /opt
+git clone https://github.com/artcore-c/Cerebrum.git
+cd Cerebrum/cerebrum-pi
+```
+
+2. **Install System Dependencies**
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3 python3-venv python3-pip
 ```
+3. **Set Up Python Virual Environment**
 ```bash
 cd /opt/cerebrum-pi
 python3 -m venv .venv
 source .venv/bin/activate
 ```
+4. **Install Python Dependencies**
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
@@ -119,7 +131,7 @@ cd /opt/cerebrum-pi/scripts
 ./cerebrum_repl.sh
 ```
 
-**REPL Commands:**
+> **REPL Commands:**
 ```bash
 >>> :help              Show commands
 >>> :model qwen_7b     Switch model
