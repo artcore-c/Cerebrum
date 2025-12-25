@@ -156,8 +156,7 @@ curl -N -X POST http://localhost:7000/v1/complete/stream \
   }'
 ```
 
-**Response:** Server-Sent Events (SSE)
-> Example output: you should see something like this...
+> **Example Response:** Server-Sent Events (SSE)
 ```bash
 data: {"token": "import", "total_tokens": 1}
 data: {"token": " asyncio", "total_tokens": 2}
@@ -170,7 +169,7 @@ data: {"done": true, "total_tokens": 129, "inference_time": 182.14}
 curl http://localhost:7000/v1/models
 ```
 
-**Example response:**
+> **Example response:**
 ```json
 {
   "models": [
@@ -193,7 +192,7 @@ curl http://localhost:7000/v1/models
 curl http://localhost:7000/v1/stats
 ```
 
-**Example response:**
+> **Example response:**
 ```json
 {
   "uptime": 3600.5,
