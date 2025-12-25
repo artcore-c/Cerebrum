@@ -68,7 +68,7 @@ The repository is commonly used with models such as:
 - WizardCoder
 - DeepSeek
 
-> **Note:** While exact model selection(s) should be in consideration of intended use, it's also recommended they prioritize selections depending on available system resources.
+> **Note:** While exact model selection(s) should be in consideration of intended use, it's also recommended they prioritize selections depending on available system resources. A good practice would be to order your models starting with your top picks first. 
 
 ### Model Paths (Important)
 
