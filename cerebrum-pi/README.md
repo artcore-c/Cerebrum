@@ -63,7 +63,7 @@ For the full list of dependencies,
 
 📄 See: [`cerebrum-pi/requirements.txt`](../cerebrum-pi/requirements.txt)
 
-> **Note:** You can complete the Installation steps below without the VPS running, but the orchestrator will not start until the VPS backend is configured and you've added the API key to `.env`.
+> **Note:** You can complete the Installation steps below without the VPS running, but the orchestrator will not start until the VPS backend is configured and you've added your API key to `.env`.
 
 ## Installation
 
