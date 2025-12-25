@@ -131,7 +131,7 @@ The backend is configured via a `.env` file located in the `cerebrum-backend/` d
 - `CEREBRUM_VPS_PORT=` Port (9000)
 - `MAX_CPU_PERCENT=` Max CPU before rejecting requests (70)
 
-**Create or edit the file**:
+**Create or edit the file**: `.env`
 ```bash
 cd ~/Cerebrum/cerebrum-backend
 sudo nano .env
@@ -194,9 +194,10 @@ grep CEREBRUM_API_KEY .env
 # Check logs
 tail -f logs/backend.log
 ```
+
 ## Systemd Service Configuration
 
-**Create or edit the file**:
+**Create or edit the file**: `cerebrum-backend.service`
 ```bash
 cd ~/Cerebrum/cerebrum-backend
 sudo nano ~/Cerebrum/cerebrum-backend/cerebrum-backend.service
