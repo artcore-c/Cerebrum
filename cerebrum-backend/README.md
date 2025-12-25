@@ -12,7 +12,7 @@ All commands in this guide are assumed to be run **on the VPS itself**, either v
 
 ## Accessing the VPS
 
-You’ll need SSH access to your VPS to install, configure, and manage the backend service.
+You’ll need SSH access (or remote management via a web terminal if your VPS provides it) to your VPS to install, configure, and manage the backend service.
 
 Typical usage:
 ```bash
