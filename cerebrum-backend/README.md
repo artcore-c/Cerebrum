@@ -20,10 +20,41 @@ ssh <your-vps-user>@<your-vps-host>
 ```
 > **Note:** If you are using **Tailscale** (recommended), you can use SSH with your VPS’s Tailscale hostname or IP.
 
+## Installation
+
+On the VPS, clone the Cerebrum repository and switch to the backend directory.
+
+1. **Clone Repository**
+> **Note:** The Cerebrum repository contains both the CM4 Orchestrator and the VPS backend.  
+> These instructions assume you are working from the **VPS Backend directory** (`cerebrum-backend/`).
+```bash
+cd ~
+git clone https://github.com/artcore-c/Cerebrum.git
+cd Cerebrum/cerebrum-backend
+```
+
+2. **Install System Dependencies**
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-venv python3-pip
+```
+3. **Set Up Python Virtual Environment**
+```bash
+cd ~/Cerebrum/cerebrum-backend
+python3 -m venv .venv
+source .venv/bin/activate
+```
+4. **Install Python Dependencies**
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
 ## Quick Start
 
 1. **Generate API Key**
 ```bash
+cd ~/Cerebrum/cerebrum-backend/scripts
 ./generate_api_key.sh
 ```
 
@@ -33,6 +64,7 @@ The backend is configured via a `.env` file located in the `cerebrum-backend/` d
 
 **Create or edit the file**:
 ```bash
+cd ~/Cerebrum/cerebrum-backend
 sudo nano .env
 ```
 
