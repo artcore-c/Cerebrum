@@ -6,7 +6,7 @@ High-performance inference engine for heavy model computation in the Cerebrum di
 
 The Cerebrum VPS Backend transforms a budget VPS into a dedicated AI inference server. It handles all heavy model computation while the CM4 Orchestrator manages routing, context, and coordination. Designed for private network access (Tailscale recommended), this backend focuses exclusively on one task: fast, efficient token generation.
 
-**Core capabilities:**
+**Primary responsibilities:**
 - Stream-optimized inference via llama.cpp
 - On-demand model loading and automatic unloading
 - Built-in resource protection (CPU/RAM limits)
@@ -250,7 +250,7 @@ Press `Ctrl+X` to exit.
 cat ~/Cerebrum/cerebrum-backend/cerebrum-backend.service
 ```
 
-## Enabling the Systemd Service
+## Enable Systemd Service
 
 For auto-start on boot:
 
