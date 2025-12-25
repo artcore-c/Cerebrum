@@ -83,9 +83,9 @@ cd Cerebrum/cerebrum-pi
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3 python3-venv python3-pip
 ```
-3. **Set Up Python Virual Environment**
+3. **Set Up Python Virtual Environment**
 ```bash
-cd /opt/cerebrum-pi
+cd /opt/Cerebrum/cerebrum-pi
 python3 -m venv .venv
 source .venv/bin/activate
 ```
@@ -135,9 +135,14 @@ cat .env | grep VPS_API_KEY
 
 2. **Start VPS Backend**
 ```bash
-# On VPS
+# SSH into your VPS
+ssh <your-vps-user>@<your-vps-host>
+
+# Navigate to the backend directory
 cd ~/cerebrum-backend
-./start_vps.sh
+
+# Start the backend
+./start.sh
 
 # Verify health
 curl http://localhost:9000/health
@@ -146,7 +151,7 @@ curl http://localhost:9000/health
 3. **Start Server (Orchestrator)**
 ```bash
 # On Raspberry Pi
-cd /opt/cerebrum-pi
+cd /opt/Cerebrum/cerebrum-pi
 ./start.sh
 ```
 
@@ -157,7 +162,7 @@ cd /opt/cerebrum-pi
 
 5. **Launch Streaming REPL**
 ```bash
-cd /opt/cerebrum-pi/scripts
+cd /opt/Cerebrum/cerebrum-pi/scripts
 ./cerebrum_repl.sh
 ```
 
@@ -303,7 +308,7 @@ curl http://localhost:7000/v1/stats
 sudo tailscale status
 
 # Check VPS is running
-ssh unicorn1@173.249.193.188
+ssh <your-vps-user>@<your-vps-host>
 cd ~/cerebrum-backend
 ./start.sh
 ```
@@ -320,10 +325,10 @@ sudo lsof -i :7000
 **API key issues:**
 ```bash
 # Verify .env file
-cat .env | grep CEREBRUM_API_KEY
+cat .env | grep VPS_API_KEY
 
 # Get key from VPS
-ssh unicorn1@173.249.193.188
+ssh <your-vps-user>@<your-vps-host>
 cat ~/cerebrum-backend/.env | grep CEREBRUM_API_KEY
 ```
 
@@ -354,7 +359,7 @@ curl localhost:7000/v1/vps/health | jq
 ## Environment Variables (.env)
 
 **Required:**
-- `CEREBRUM_API_KEY` – must match VPS backend key
+- `VPS_API_KEY` – must match the API key generated on the VPS backend
 
 **Optional:**
 - `VPS_ENDPOINT` – override default backend address
@@ -363,7 +368,7 @@ curl localhost:7000/v1/vps/health | jq
 
 Check VPS backend status:
 ```bash
-ssh unicorn1@173.249.193.188
+ssh <your-vps-user>@<your-vps-host>
 cd ~/cerebrum-backend
 ./test.sh
 ```
