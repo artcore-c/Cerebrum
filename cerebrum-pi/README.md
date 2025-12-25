@@ -6,6 +6,31 @@ Intelligent code generation system running on Raspberry Pi CM4
 
 The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
 
+## What the CM4 Orchestrator Does (and Does Not Do)
+
+The CM4 Orchestrator:
+- Prepares prompts and manages context
+- Routes requests and streams responses
+- Enforces safety and resource limits
+
+It does **not**:
+- Run large language models locally
+- Perform heavy inference or training
+- Store user prompts or responses long-term
+
+## System Requirements
+
+- Raspberry Pi CM4 (4GB+ RAM recommended)
+- Debian 12 (Bookworm)
+- Python 3.11+
+- Network connection to VPS (via Tailscale)
+
+## Performance
+
+- **Local routing:** typically under 10ms
+- **VPS inference:** 1-5 seconds (may vary depending on model size and load)
+- **Memory usage:** ~500MB (CM4)
+
 ## Architecture
 
 ```text
@@ -22,7 +47,7 @@ For more detail about Cerebrum’s internal design and algorithms,
 
 📚 See: [`docs/architecture/ARCHITECTURE.md`](../docs/architecture/ARCHITECTURE.md)
 
-## Prerequisite: VPS Backend
+## Prerequisites: VPS Backend
 
 The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
 
@@ -176,7 +201,7 @@ curl http://localhost:7000/v1/stats
 - `core/` - VPS connection management
 - `retrieval/` - Smart chunking and prompt assembly
 
-**Future Expansion:**
+**Future Expansions:**
 - `orchestration/` - Multi-step task coordination
 - `reasoning/` - Symbolic / constraint-based reasoning
 - `tasks/` - Reusable task templates
@@ -226,6 +251,12 @@ cat ~/cerebrum-backend/.env | grep CEREBRUM_API_KEY
 tail -f logs/cerebrum.log
 ```
 
+**By default, logs are written to:**
+- `logs/cerebrum.log` – orchestrator runtime logs
+- `journalctl` – if running under systemd
+
+If troubleshooting, start here.
+
 **Manual testing:**
 ```bash
 # Quick health check
@@ -235,18 +266,13 @@ curl localhost:7000/health | jq
 curl localhost:7000/v1/vps/health | jq
 ```
 
-## System Requirements
+## Environment Variables (.env)
 
-- Raspberry Pi CM4 (4GB+ RAM recommended)
-- Debian 12 (Bookworm)
-- Python 3.9+
-- Network connection to VPS (via Tailscale)
+**Required:**
+- `CEREBRUM_API_KEY` – must match VPS backend key
 
-## Performance
-
-- **Local routing:** typically under 10ms
-- **VPS inference:** 1-5 seconds (may vary depending on model size and load)
-- **Memory usage:** ~500MB (CM4)
+**Optional:**
+- `VPS_ENDPOINT` – override default backend address
 
 ## Support
 
