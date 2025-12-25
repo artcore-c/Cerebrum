@@ -56,8 +56,9 @@ Before proceeding, ensure the VPS backend is installed, running, and that you ha
 📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
 The CM4 Orchestrator runs inside a virtual environment (venv), Python dependencies are installed after the venv is activated and can be installed manually or via requirements.txt (recommended). 
+For the full list of dependencies, 
 
-For the full list of dependencies, see: [`cerebrum-pi/requirements.txt`](../cerebrum-pi/requirements.txt)
+📄 See: [`cerebrum-pi/requirements.txt`](../cerebrum-pi/requirements.txt)
 
 ## Installation
 
