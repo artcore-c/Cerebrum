@@ -4,18 +4,70 @@ Lightweight inference backend for heavy model computation, designed to run on a 
 
 This service is intended to be accessed only by trusted clients (e.g. the Cerebrum orchestrator) over a private network such as Tailscale.
 
+## Overview
+
+The Cerebrum VPS Backend runs on a virtual private server and is responsible for all large language model inference. It is designed to be accessed remotely by the CM4 Orchestrator over a private network (such as Tailscale) and is not intended to be exposed publicly.
+
+All commands in this guide are assumed to be run **on the VPS itself**, either via SSH or a remote console.
+
+## Accessing the VPS
+
+You’ll need SSH access to your VPS to install, configure, and manage the backend service.
+
+Typical usage:
+```bash
+ssh <your-vps-user>@<your-vps-host>
+```
+> **Note** If you are using Tailscale (recommended), you may connect using your VPS’s Tailscale hostname or IP instead of your VPS's public IP.
+
 ## Quick Start
 
 1. **Generate API Key**
-   ```bash
-   ./generate_api_key.sh
-   ```
+```bash
+./generate_api_key.sh
+```
 
 2. **Configure .env**
-   ```bash
-   nano .env
-   # Add the generated API key
-   ```
+
+The backend is configured via a `.env` file located in the `cerebrum-backend/` directory.
+
+**Create or edit the file**:
+```bash
+sudo nano .env
+```
+
+Edit `.env`:
+- `CEREBRUM_API_KEY` - API authentication key
+- `CEREBRUM_N_THREADS=1` - 
+- `VPS_BIND_IP` - Local Host (127.0.0.1)
+- `CEREBRUM_VPS_PORT` - Port (9000)
+- `MAX_CPU_PERCENT` - Max CPU before rejecting requests (70)
+
+```bash
+# VPS Configuration
+# Cerebrum VPS Backend - Example Configuration
+# Copy to .env and adjust as needed
+
+# Authentication
+CEREBRUM_API_KEY=your-api-key-here
+
+#
+CEREBRUM_N_THREADS=1
+
+# Network (bind locally; access via tunnel or Tailscale)
+VPS_BIND_IP=127.0.0.1
+CEREBRUM_VPS_PORT=9000
+
+# Resource limits
+MAX_CPU_PERCENT=70
+
+# Optional hardening: allow only a specific client IP
+# ALLOWED_CM4_IP=100.x.y.z
+```
+**Verify configuration**:
+```bash
+grep CEREBRUM_API_KEY .env
+```
 
 3. **Start Server**
    ```bash
@@ -59,22 +111,17 @@ sudo systemctl status cerebrum-backend
 # View logs
 sudo journalctl -u cerebrum-backend -f
 ```
+> Once enabled, the backend will start automatically on reboot.
 
 ## API Endpoints
 
 - `GET /health` - Health check (no auth)
-- `POST /v1/inference` - Run inference (requires API key)
+- `POST /v1/inference` - Internal inference endpoint used by the CM4 orchestrator
+ (requires API key)
 - `GET /v1/models` - List models (requires API key)
 - `GET /v1/stats` - System statistics (requires API key)
 - `POST /v1/unload/{model}` - Unload model (requires API key)
 
-## Configuration
-
-Edit `.env`:
-- `CEREBRUM_API_KEY` - API authentication key
-- `VPS_BIND_IP` - Local Host (127.0.0.1)
-- `CEREBRUM_VPS_PORT` - Port (9000)
-- `MAX_CPU_PERCENT` - Max CPU before rejecting requests (70)
 
 ## Model Management
 
@@ -101,7 +148,8 @@ curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:9000/v1/stats | jq
 
 - API key authentication required for all inference endpoints
 - Health endpoint is public (for monitoring)
-- Binds to Tailscale IP only (not public)
+- Intended to bind only to localhost or a private interface (e.g. Tailscale)
+- Not designed to be exposed to the public internet
 
 ## Resource Protection
 
