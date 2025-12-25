@@ -18,7 +18,7 @@ Typical usage:
 ```bash
 ssh <your-vps-user>@<your-vps-host>
 ```
-> **Note** If you are using Tailscale (recommended), you may connect using your VPS’s Tailscale hostname or IP instead of your VPS's public IP.
+> **Note:** If you are using **Tailscale** (recommended), you may connect using your VPS’s Tailscale hostname or IP instead of your VPS's public IP.
 
 ## Quick Start
 
