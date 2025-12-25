@@ -2,13 +2,9 @@
 
 Intelligent code generation system running on Raspberry Pi CM4
 
-## Prerequisite: VPS Backend
+## How It Works (Overview)
 
-The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
-
-Before proceeding, ensure the VPS backend is installed, running, and that you have generated a `CEREBRUM_API_KEY`.
-
-📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
+The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
 
 ## Architecture
 
@@ -22,13 +18,17 @@ Before proceeding, ensure the VPS backend is installed, running, and that you ha
 │  • Request routing           │        │  • Resource protection       │
 └──────────────────────────────┘        └──────────────────────────────┘
 ```
-## How It Works (Overview)
-
-The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
-
 For more detail about Cerebrum’s internal design and algorithms,
 
 📚 See: [`docs/architecture/ARCHITECTURE.md`](../docs/architecture/ARCHITECTURE.md)
+
+## Prerequisite: VPS Backend
+
+The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
+
+Before proceeding, ensure the VPS backend is installed, running, and that you have generated a `CEREBRUM_API_KEY`.
+
+📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
 ## Installation
 
