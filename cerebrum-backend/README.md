@@ -22,7 +22,7 @@ ssh <your-vps-user>@<your-vps-host>
 
 ## Installation
 
-On the VPS, clone the Cerebrum repository and switch to the backend directory.
+On the VPS, clone the Cerebrum repository and switch to the `/cerebrum-backend` directory.
 
 1. **Clone Repository**
 > **Note:** The Cerebrum repository contains both the CM4 Orchestrator and the VPS backend.  
