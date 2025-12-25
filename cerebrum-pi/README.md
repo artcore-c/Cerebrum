@@ -12,7 +12,7 @@ The CM4 Orchestrator transforms a **Raspberry Pi** into an intelligent AI coordi
 - **Real-time coordination** - SSE streaming, concurrency limits, request tracking
 - **Production resilience** - Circuit breakers, load shedding, correlation IDs
 
-The CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale model inference.
+The CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale large model inference.
 
 **As part of a Hybrid System the Orchestrator intentionally does not:**
 - Run large language models locally
@@ -58,7 +58,7 @@ Before proceeding, ensure the VPS backend is installed, running, and that you ha
 
 📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
-The CM4 Orchestrator runs inside a virtual environment (venv), Python dependencies are installed AFTER the venv is activated and can be installed manually or via requirements.txt (recommended). 
+The CM4 Orchestrator runs inside a Python virtual environment (venv). Dependencies are installed AFTER the venv is activated, and can be installed manually or via requirements.txt (recommended). 
 For the full list of dependencies, 
 
 📄 See: [`cerebrum-pi/requirements.txt`](../cerebrum-pi/requirements.txt)
