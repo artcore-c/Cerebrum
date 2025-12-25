@@ -76,6 +76,14 @@ At present, model file paths are defined directly in the backend code:
 
 📄 [`cerebrum-backend/vps_server/main.py`](../cerebrum-backend/vps_server/main.py)
 
+Each model name is mapped to an absolute filesystem path. For example:
+```bash
+model_paths = {
+    "qwen_7b": "/home/<vps-user>/cerebrum-backend/models/qwen-7b-q4.gguf",
+    "codellama_7b": "/home/<vps-user>/cerebrum-backend/models/codellama-7b-q4.gguf",
+}
+```
+
 ## Quick Start
 
 1. **Generate API Key**
