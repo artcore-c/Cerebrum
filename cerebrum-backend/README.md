@@ -150,14 +150,14 @@ grep CEREBRUM_API_KEY .env
 ```
 
 3. **Start Server**
-   ```bash
-   ./start.sh
-   ```
+```bash
+./start.sh
+```
 
 4. **Test**
-   ```bash
-   ./test.sh
-   ```
+```bash
+./test.sh
+```
 
 ## Manual Commands
 
