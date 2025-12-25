@@ -117,9 +117,9 @@ cerebrum-backend/
     └── __init__.py
 ```
 **Active Components:**
-- `venv/` - Python Virtual Environment
-- `models/` - Selected model(s)
-- `vps_server/` - Heavy inference
+- `venv/` - Isolated Python runtime environment
+- `vps_server/` - FastAPI inference service and request handling
+- `models/` - - GGUF model assets (loaded into memory on-demand)
 
 ## 🚀 Quick Start
 
