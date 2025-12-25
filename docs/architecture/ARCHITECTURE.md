@@ -1,4 +1,4 @@
-# Cerebrum/docs/architecture/Architecture.md
+# Cerebrum/docs/architecture/ARCHITECTURE.md
 
 ## System Overview
 

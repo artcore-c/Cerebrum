@@ -1,4 +1,4 @@
-# Cerebrum/docs/guides/Development.md
+# Cerebrum/docs/guides/DEVELOPMENT.md
 
 ## Setup on Mac
 
