@@ -111,11 +111,11 @@ sudo nano .env
 ```
 
 Edit `.env`:
-- `CEREBRUM_API_KEY` - API authentication key
-- `CEREBRUM_N_THREADS=1` - Number of CPU threads allocated to model inference
-- `VPS_BIND_IP` - Local Host (127.0.0.1)
-- `CEREBRUM_VPS_PORT` - Port (9000)
-- `MAX_CPU_PERCENT` - Max CPU before rejecting requests (70)
+- `CEREBRUM_API_KEY=` API authentication key (Your_API_Key)
+- `CEREBRUM_N_THREADS=` Number of CPU threads allocated to model inference (1)
+- `VPS_BIND_IP=` Local Host (127.0.0.1)
+- `CEREBRUM_VPS_PORT=` Port (9000)
+- `MAX_CPU_PERCENT=` Max CPU before rejecting requests (70)
 
 ```bash
 # VPS Configuration
