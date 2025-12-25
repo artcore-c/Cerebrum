@@ -54,7 +54,7 @@ For more detail about Cerebrum’s internal design and algorithms,
 
 The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
 
-Before proceeding, ensure the VPS backend is installed, running, and that you have generated a `CEREBRUM_API_KEY`.
+You'll need to generate a `CEREBRUM_API_KEY` from the VPS before starting the orchestrator, then add it to the `.env` file on the Raspberry Pi. _The orchestrator reads this key at startup to authenticate requests to the VPS._
 
 📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
@@ -62,6 +62,8 @@ The CM4 Orchestrator runs inside a Python virtual environment (venv). Dependenci
 For the full list of dependencies, 
 
 📄 See: [`cerebrum-pi/requirements.txt`](../cerebrum-pi/requirements.txt)
+
+> **Note:** You can complete the Installation steps below without the VPS running, but the orchestrator will not start until the VPS backend is configured and you've added the API key to `.env`.
 
 ## Installation
 
@@ -96,12 +98,42 @@ pip install -r requirements.txt
 ## Quick Start
 
 1. **Configure API Key**
+
+Create the `.env` configuration file with your VPS API key:
+
+**Create or Edit .env Using nano**
 ```bash
-cd /opt/cerebrum-pi
+cd /opt/Cerebrum/cerebrum-pi
 sudo nano .env
 # Add CEREBRUM_API_KEY (from the VPS backend)
-# This key must match the `CEREBRUM_API_KEY` you generated on the VPS backend.
 ```
+
+**Then paste the following, replacing `Add_Your_API_Key_Here` with the key you generated on the VPS**:
+```dotenv
+# Cerebrum CM4 Configuration
+
+# VPS Backend Connection (Tailscale)
+VPS_ENDPOINT=http://127.0.0.1:9000
+VPS_API_KEY=Add_Your_API_Key_Here
+
+# CM4 API Configuration
+CEREBRUM_HOST=0.0.0.0
+CEREBRUM_PORT=7000
+
+# Logging
+LOG_LEVEL=INFO
+```
+**Save and exit**:
+Press `Ctrl+O` to save, then `Enter` to confirm
+
+Press `Ctrl+X` to exit.
+
+**Verify your configuration:**
+```bash
+cat .env | grep VPS_API_KEY
+# Should show: VPS_API_KEY=your_actual_key_here
+```
+> This key must match the `CEREBRUM_API_KEY` you generated on the VPS backend.
 
 2. **Start VPS Backend**
 ```bash
