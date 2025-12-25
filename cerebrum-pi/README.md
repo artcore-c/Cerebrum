@@ -170,9 +170,38 @@ data: {"done": true, "total_tokens": 129, "inference_time": 182.14}
 curl http://localhost:7000/v1/models
 ```
 
+**Example response:**
+```json
+{
+  "models": [
+    {
+      "id": "qwen_7b",
+      "name": "Qwen 7B",
+      "languages": ["python", "javascript", "typescript"]
+    },
+    {
+      "id": "codellama_7b", 
+      "name": "CodeLLaMA 7B",
+      "languages": ["rust", "c", "cpp", "go"]
+    }
+  ]
+}
+```
+
 ### System Stats
 ```bash
 curl http://localhost:7000/v1/stats
+```
+
+**Example response:**
+```json
+{
+  "uptime": 3600.5,
+  "requests_total": 42,
+  "requests_active": 1,
+  "vps_available": true,
+  "memory_mb": 487.2
+}
 ```
 
 ## File Structure
