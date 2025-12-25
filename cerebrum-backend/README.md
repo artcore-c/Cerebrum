@@ -258,15 +258,32 @@ For auto-start on boot:
 sudo cp cerebrum-backend.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable cerebrum-backend
+```
+> Once enabled, the backend will start automatically on reboot.
+```bash
 sudo systemctl start cerebrum-backend
 
 # Check status
 sudo systemctl status cerebrum-backend
 
-# View logs
+# Watch logs
 sudo journalctl -u cerebrum-backend -f
 ```
-> Once enabled, the backend will start automatically on reboot.
+> Example: you should see something like this 
+```bash
+● cerebrum-backend.service - Cerebrum VPS Backend
+     Loaded: loaded (/etc/systemd/system/cerebrum-backend.service; disabled; preset: enabled)
+     Active: active (running) since Sun 2025-12-25 00:00:01 -05; 43ms ago
+   Main PID: 969972 (uvicorn)
+      Tasks: 1 (limit: 9426)
+     Memory: 3.4M
+        CPU: 16ms
+     CGroup: /system.slice/cerebrum-backend.service
+             └─969972 /home/<vps-user-name>/cerebrum-backend/venv/bin/python3 /home/<vps-user-name>/cerebrum-backend/venv/bin/uvicorn vps>
+
+Dec 25 00:00:01 <vps-user-name> systemd[1]: Started cerebrum-backend.service - Cerebrum VPS Backend.
+```
+> This indicates the backend is running correctly and waiting for requests from the CM4 Orchestrator.
 
 ## API Endpoints
 
