@@ -4,11 +4,7 @@ Intelligent code generation system running on Raspberry Pi CM4
 
 ## Overview
 
-The CM4 Orchestrator is the intelligent routing layer between users and the VPS inference backend. It never runs language models locally—instead, it prepares prompts, manages context, and coordinates requests to maximize efficiency and safety.
-
-## Overview
-
-The CM4 Orchestrator transforms a Raspberry Pi into an intelligent AI coordination layer. It performs all prompt analysis, context management, and request routing locally, then delegates model execution to the VPS backend—maximizing both systems' strengths.
+The CM4 Orchestrator transforms a Raspberry Pi into an intelligent AI coordination layer. It performs all prompt analysis, context management, and request routing locally, then delegates model execution to the VPS backend. With this distributed approach we create a unique hybrid system that maximizes each component for optimum efficiency and safety.
 
 **The CM4 Orchestrator provides:**
 - **Prompt intelligence** - Extracts instructions, chunks large code, deduplicates patterns
@@ -16,7 +12,7 @@ The CM4 Orchestrator transforms a Raspberry Pi into an intelligent AI coordinati
 - **Real-time coordination** - SSE streaming, concurrency limits, request tracking
 - **Production resilience** - Circuit breakers, load shedding, correlation IDs
 
-The architecture is deliberate: the CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale model inference. Each does what it's optimized for.
+The CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale model inference. Each part does what it's optimized for.
 
 **As part of a Hybrid System the Orchestrator intentionally does not:**
 - Run large language models locally
