@@ -69,7 +69,7 @@ For the full list of dependencies,
 
 On the Raspberry Pi, clone or sync the Cerebrum repository and install Python dependencies.
 
-1. **Clone Repository**
+1. **Clone The Repository**
 > **Note:** The Cerebrum repository contains both the CM4 Orchestrator and the VPS backend.  
 > These instructions assume you are working from the **CM4 Orchestrator directory** (`cerebrum-pi/`).
 ```bash
@@ -203,7 +203,7 @@ curl -N -X POST http://localhost:7000/v1/complete/stream \
   }'
 ```
 
-> **Example Response:** Server-Sent Events (SSE)
+> **Example response:** Server-Sent Events (SSE)
 ```bash
 data: {"token": "import", "total_tokens": 1}
 data: {"token": " asyncio", "total_tokens": 2}

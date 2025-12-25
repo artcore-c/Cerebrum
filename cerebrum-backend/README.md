@@ -28,7 +28,7 @@ ssh <your-vps-user>@<your-vps-host>
 
 On the VPS, clone the Cerebrum repository and switch to the `cerebrum-backend/` directory.
 
-1. **Clone Repository**
+1. **Clone The Repository**
 > **Note:** The Cerebrum repository contains both the CM4 Orchestrator and the VPS backend.  
 > These instructions assume you are working from the **VPS Backend directory** (`cerebrum-backend/`).
 ```bash
