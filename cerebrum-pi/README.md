@@ -47,7 +47,7 @@ For more detail about Cerebrum’s internal design and algorithms,
 
 📚 See: [`docs/architecture/ARCHITECTURE.md`](../docs/architecture/ARCHITECTURE.md)
 
-## Prerequisites: VPS Backend
+## Prerequisites
 
 The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
 
@@ -55,14 +55,24 @@ Before proceeding, ensure the VPS backend is installed, running, and that you ha
 
 📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
+Python dependencies can be installed manually, 
+or via `requirements.txt` during installation (recommended).
+
 ## Installation
 
 On the Raspberry Pi, clone or sync the Cerebrum repository and install Python dependencies:
 
 ```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-venv python3-pip
+```
+```bash
 cd /opt/cerebrum-pi
 python3 -m venv .venv
 source .venv/bin/activate
+```
+```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -183,7 +193,7 @@ curl http://localhost:7000/v1/stats
 │   │   └── vps_client.py            # Connection pooling, circuit breaker
 │   ├── retrieval/              
 │   │   ├── __init__.py
-│   │   ├── assembler.py.            # Prompt assembly
+│   │   ├── assembler.py             # Prompt assembly
 │   │   ├── chunker.py               # Text chunking
 │   │   ├── instruction_parser.py    # Instruction extraction
 │   │   └── ranker.py                # Relevance ranking + dedup
