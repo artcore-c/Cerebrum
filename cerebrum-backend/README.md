@@ -84,7 +84,7 @@ model_paths = {
 }
 ```
 
-> **Note:** The placeholder `<vps-user-name>` should be replaced with your actual VPS username (e.g. `debian`, or another username you created).
+> **Note:** In the file `vps_server/main.py` the placeholder `<vps-user-name>` should be replaced with your actual VPS username (e.g. `debian`, or another username you created).
 
 You **must update these paths** to match:
 - your VPS username
