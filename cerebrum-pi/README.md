@@ -95,7 +95,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 1. **Configure API Key**
 

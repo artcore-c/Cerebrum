@@ -112,7 +112,7 @@ cerebrum-backend/
 └── .env
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 1. **Generate API Key**
 ```bash
