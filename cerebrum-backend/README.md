@@ -238,6 +238,18 @@ StandardError=append:/home/<vps-user-name>/Cerebrum/cerebrum-backend/logs/error.
 WantedBy=multi-user.target
 ```
 
+**Save and exit**:
+
+Press `Ctrl+O` to save, then `Enter` to confirm
+
+Press `Ctrl+X` to exit.
+
+**Verify configuration**:
+
+```bash
+cat ~/Cerebrum/cerebrum-backend/cerebrum-backend.service
+```
+
 ## Enabling the Systemd Service
 
 For auto-start on boot:
