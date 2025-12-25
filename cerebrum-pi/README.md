@@ -1,4 +1,4 @@
-# Cerebrum CM4 Orchestrator Setup Guide
+# Cerebrum CM4 Orchestrator
 
 Intelligent code generation system component running on Raspberry Pi CM4
 
