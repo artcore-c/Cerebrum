@@ -194,8 +194,50 @@ grep CEREBRUM_API_KEY .env
 # Check logs
 tail -f logs/backend.log
 ```
+## Systemd Service Configuration
 
-## Systemd Service
+**Create or edit the file**:
+```bash
+cd ~/Cerebrum/cerebrum-backend
+sudo nano ~/Cerebrum/cerebrum-backend/cerebrum-backend.service
+```
+**copy the following and paste into** `cerebrum-backend.service`**, replacing `<vps-user-name>` with your actual VPS username
+
+```bash
+[Unit]
+Description=Cerebrum VPS Backend
+After=network.target
+
+[Service]
+CPUQuota=95%
+Nice=10
+TasksMax=50
+MemoryHigh=6000M
+MemoryMax=6500M
+OOMPolicy=stop
+
+Type=simple
+User=<vps-user-name>
+WorkingDirectory=/home/<vps-user-name>/Cerebrum/cerebrum-backend
+Environment="PATH=/home/<vps-user-name>/Cerebrum/cerebrum-backend/venv/bin"
+EnvironmentFile=/home/<vps-user-name>/Cerebrum/cerebrum-backend/.env
+
+ExecStart=/home/<vps-user-name>/Cerebrum/cerebrum-backend/venv/bin/uvicorn \
+  vps_server.main:app \
+  --host ${VPS_BIND_IP} \
+  --port ${CEREBRUM_VPS_PORT} \
+  --workers 1
+
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/home/<vps-user-name>/Cerebrum/cerebrum-backend/logs/backend.log
+StandardError=append:/home/<vps-user-name>/Cerebrum/cerebrum-backend/logs/error.log
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## Enabling the Systemd Service
 
 For auto-start on boot:
 
