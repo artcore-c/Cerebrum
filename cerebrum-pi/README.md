@@ -12,7 +12,7 @@ The CM4 Orchestrator transforms a **Raspberry Pi** into an intelligent AI coordi
 - **Real-time coordination** - SSE streaming, concurrency limits, request tracking
 - **Production resilience** - Circuit breakers, load shedding, correlation IDs
 
-The CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale model inference. Each part does what it's optimized for.
+The CM4 handles millisecond-scale decisions and coordination, while the VPS handles second-scale model inference.
 
 **As part of a Hybrid System the Orchestrator intentionally does not:**
 - Run large language models locally
