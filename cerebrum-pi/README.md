@@ -54,7 +54,7 @@ For more detail about Cerebrum’s internal design and algorithms,
 
 The CM4 Orchestrator depends on a running Cerebrum VPS Inference Backend to perform model inference and generate API keys.
 
-You'll need to generate a `CEREBRUM_API_KEY` from the VPS before starting the orchestrator, then add it to the `.env` file on the Raspberry Pi. _The orchestrator reads this key at startup to authenticate requests to the VPS._
+You'll need to generate an API key on the VPS before starting the orchestrator, then add it to the `.env` file on the Raspberry Pi. _The orchestrator reads this key at startup to authenticate requests to the VPS._
 
 📙 See: [`cerebrum-backend/README.md`](../cerebrum-backend/README.md)
 
@@ -131,7 +131,7 @@ Press `Ctrl+X` to exit.
 cat .env | grep VPS_API_KEY
 # Should show: VPS_API_KEY=your_actual_key_here
 ```
-> This key must match the `CEREBRUM_API_KEY` you generated on the VPS backend.
+> This must match the key generated on the VPS (where it is defined as CEREBRUM_API_KEY).
 
 2. **Start VPS Backend**
 ```bash
