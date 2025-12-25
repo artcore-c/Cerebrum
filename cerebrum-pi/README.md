@@ -100,12 +100,9 @@ pip install -r requirements.txt
 1. **Configure API Key**
 
 Create the `.env` configuration file with your VPS API key:
-
-**Create or Edit .env Using nano**
 ```bash
 cd /opt/Cerebrum/cerebrum-pi
 sudo nano .env
-# Add CEREBRUM_API_KEY (from the VPS backend)
 ```
 
 **Then paste the following, replacing `Add_Your_API_Key_Here` with the key you generated on the VPS**:
