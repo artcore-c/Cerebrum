@@ -56,7 +56,7 @@ Models are **not downloaded or built automatically** at runtime.
 
 When you clone the Cerebrum repository, the backend expects model files to reside in the `cerebrum-backend/models/` directory.
 
-Models are loaded on-demand when requested by the CM4 Orchestrator and cached in RAM until they are unloaded or become idle.
+Models are loaded into memory on-demand when first requested by the CM4 Orchestrator, then cached until unloaded or idle.
 
 ### Supported Models
 
@@ -83,7 +83,6 @@ model_paths = {
     "codellama_7b": "/home/<vps-user-name>/Cerebrum/cerebrum-backend/models/codellama-7b-q4.gguf",
 }
 ```
-
 > **Note:** In the file `vps_server/main.py` the placeholder `<vps-user-name>` should be replaced with your actual VPS username (e.g. `debian`, or another username you created).
 
 You **must update these paths** to match:
@@ -91,6 +90,23 @@ You **must update these paths** to match:
 - the actual location of the model files
 
 This explicit mapping keeps model loading predictable and avoids accidental exposure of arbitrary filesystem paths.
+
+### Expected Directory Layout
+
+After cloning the repository, your backend directory should look like this:
+
+```text
+cerebrum-backend/
+├── models/
+│   ├── qwen-7b-q4.gguf
+│   ├── codellama-7b-q4.gguf
+│   └── ...
+├── vps_server/
+│   └── main.py
+├── scripts/
+├── start.sh
+└── .env
+```
 
 ## Quick Start
 
@@ -106,7 +122,7 @@ The backend is configured via a `.env` file located in the `cerebrum-backend/` d
 
 **This example shows the values you'll need to add when you edit** `.env`:
 - `CEREBRUM_API_KEY=` API authentication key (Your_API_Key)
-- `CEREBRUM_N_THREADS=` Number of CPU threads allocated to model inference (1)
+- `CEREBRUM_N_THREADS=` Number of CPU threads allocated per inference request (1)
 - `VPS_BIND_IP=` Local Host (127.0.0.1)
 - `CEREBRUM_VPS_PORT=` Port (9000)
 - `MAX_CPU_PERCENT=` Max CPU before rejecting requests (70)
@@ -202,6 +218,13 @@ sudo journalctl -u cerebrum-backend -f
 - `GET /v1/stats` - System statistics (requires API key)
 - `POST /v1/unload/{model}` - Unload model (requires API key)
 
+### Authentication
+
+Authenticated requests must include the API key as an HTTP header:
+
+```bash
+-H "X-API-Key: YOUR_API_KEY"
+```
 
 ## Model Management
 
