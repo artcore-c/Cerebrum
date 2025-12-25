@@ -2,21 +2,22 @@
 
 Intelligent code generation system running on Raspberry Pi CM4
 
-## How It Works (Overview)
+## Overview
 
-The CM4 Orchestrator performs intelligent prompt preparation before forwarding requests to the VPS backend, including chunking, deduplication, model routing, and fault protection.
+The CM4 Orchestrator is the intelligent routing layer between users and the VPS inference backend. It never runs language models locally—instead, it prepares prompts, manages context, and coordinates requests to maximize efficiency and safety.
 
-## What the CM4 Orchestrator Does (and Does Not Do)
+**The CM4 Orchestrator handles:**
+- **Prompt preparation** - Extracts instructions, chunks large code, deduplicates patterns
+- **Model routing** - Selects appropriate models based on language (Qwen for Python/JS, CodeLLaMA for Rust/C)
+- **Request coordination** - Streams responses in real-time, enforces concurrency limits
+- **Fault protection** - Circuit breakers, load shedding, request correlation
 
-The CM4 Orchestrator:
-- Prepares prompts and manages context
-- Routes requests and streams responses
-- Enforces safety and resource limits
-
-It does **not**:
+**What it doesn't do:**
 - Run large language models locally
 - Perform heavy inference or training
 - Store user prompts or responses long-term
+
+Think of it as a smart proxy: it decides *what* to send, *how much* to send, and *how* to stream results back—letting the VPS focus purely on model execution.
 
 ## System Requirements
 
