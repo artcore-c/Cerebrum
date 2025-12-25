@@ -221,3 +221,5 @@ python-dotenv==1.0.1
 - Model swapping on demand
 - AST-based chunking for Python
 - Response caching layer
+## File Structure
+```
