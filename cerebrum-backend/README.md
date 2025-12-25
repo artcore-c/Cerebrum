@@ -79,8 +79,8 @@ Model file paths are defined directly in the `cerebrum-backend/` VPS code in the
 Each model name is mapped to an absolute filesystem path. For example:
 ```bash
 model_paths = {
-    "qwen_7b": "/home/<vps-user-name>/cerebrum-backend/models/qwen-7b-q4.gguf",
-    "codellama_7b": "/home/<vps-user-name>/cerebrum-backend/models/codellama-7b-q4.gguf",
+    "qwen_7b": "/home/<vps-user-name>/Cerebrum/cerebrum-backend/models/qwen-7b-q4.gguf",
+    "codellama_7b": "/home/<vps-user-name>/Cerebrum/cerebrum-backend/models/codellama-7b-q4.gguf",
 }
 ```
 
