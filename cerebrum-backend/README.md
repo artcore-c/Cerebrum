@@ -1,6 +1,6 @@
 # Cerebrum VPS Backend
 
-High-performance inference engine for heavy model computation for a distributed AI code generation system
+High-performance inference engine for heavy model computation in a distributed AI code generation system
 
 ## Overview
 
