@@ -105,7 +105,7 @@ cd /opt/Cerebrum/cerebrum-pi
 sudo nano .env
 ```
 
-**Then paste the following, replacing `Add_Your_API_Key_Here` with the key you generated on the VPS**:
+Then paste the following, **replacing `Add_Your_API_Key_Here` with the key you generated on the VPS**:
 ```dotenv
 # Cerebrum CM4 Configuration
 
@@ -121,6 +121,7 @@ CEREBRUM_PORT=7000
 LOG_LEVEL=INFO
 ```
 **Save and exit**:
+
 Press `Ctrl+O` to save, then `Enter` to confirm
 
 Press `Ctrl+X` to exit.
