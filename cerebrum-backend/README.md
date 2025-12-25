@@ -261,6 +261,7 @@ sudo systemctl enable cerebrum-backend
 ```
 > Once enabled, the backend will start automatically on reboot.
 ```bash
+# Start the service
 sudo systemctl start cerebrum-backend
 
 # Check status
