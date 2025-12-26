@@ -23,8 +23,6 @@ Cerebrum achieves production-grade AI code generation on modest hardware through
 - **Context Reduction:** Up to 82% via smart chunking
 - **Memory Footprint:** ~500MB (CM4), ~4GB (VPS with model loaded)
 
-**Design Philosophy:** Let each component do what it's optimized for—fast I/O and coordination on CM4, sustained compute on VPS.
-
 ---
 
 ## Workload Separation
@@ -42,16 +40,16 @@ Cerebrum achieves production-grade AI code generation on modest hardware through
 | Model selection | <1ms | Lookup |
 | SSE proxying | <10ms/token | Network I/O |
 
-**Why CM4 is perfect for this:**
-- ✅ Fast I/O (network, disk)
-- ✅ Low latency for coordination
-- ✅ Efficient at string operations
-- ✅ Low idle power consumption
+**Strengths:**
+- Fast I/O (network, disk)
+- Low latency for coordination
+- Efficient at string operations
+- Low idle power consumption
 
-**What CM4 doesn't do:**
-- ❌ Model inference (CPU/RAM intensive)
-- ❌ Heavy numerical computation
-- ❌ Long-running CPU tasks
+**Excluded Responsibilities:**
+- Model inference (CPU/RAM intensive)
+- Heavy numerical computation
+- Long-running CPU tasks
 
 ### VPS Backend
 
@@ -64,10 +62,10 @@ Cerebrum achieves production-grade AI code generation on modest hardware through
 | Streaming response | <10ms/token | Network I/O |
 
 **Why VPS excels:**
-- ✅ Sustained CPU performance
-- ✅ Sufficient RAM for 7B models
-- ✅ Always-on availability
-- ✅ Expandable resources
+- Sustained CPU performance
+- Sufficient RAM for 7B models
+- Always-on availability
+- Expandable resources
 
 **Deliberately single-threaded:**
 - One model loaded at a time
@@ -387,7 +385,7 @@ for token in model.generate_stream():
 
 ## Performance Anti-Patterns (Avoided)
 
-### ❌ Running Models on CM4
+### Running Models on CM4
 
 **Why not:**
 - 7B model needs ~4GB RAM (would OOM)
@@ -396,7 +394,7 @@ for token in model.generate_stream():
 
 **Better:** Delegate to VPS
 
-### ❌ Multiple Concurrent VPS Models
+### Multiple Concurrent VPS Models
 
 **Why not:**
 - 2 models = 8GB RAM (exceeds VPS capacity)
@@ -405,7 +403,7 @@ for token in model.generate_stream():
 
 **Better:** Single model, queue requests
 
-### ❌ Aggressive Caching
+### Aggressive Caching
 
 **Why not:**
 - Code generation rarely repeats exactly
@@ -414,7 +412,7 @@ for token in model.generate_stream():
 
 **Better:** Stateless, compute on-demand
 
-### ❌ Synchronous VPS Calls
+### Synchronous VPS Calls
 
 **Why not:**
 - Blocks CM4 event loop
@@ -470,7 +468,7 @@ POST /v1/complete/batch
 
 **1. FAISS Semantic Search**
 - **Blocker:** microSD write endurance
-- **Requires:** NVMe SSD (CM5 upgrade)
+- **Requires:** NVMe SSD (+ CM5 upgrade)
 - **Benefit:** RAG, example-based completion
 
 **2. Multi-Model Support**
@@ -496,7 +494,7 @@ POST /v1/complete/batch
 ### CM4 Overhead Measurement
 ```bash
 # Time chunking operation
-ssh kali@100.75.37.26
+ssh <cm4-user>@<cm4-host>
 cd /opt/cerebrum-pi
 python3 << EOF
 import time
@@ -513,7 +511,7 @@ EOF
 ### VPS Inference Speed
 ```bash
 # Measure tok/s
-ssh unicorn1@100.78.22.113
+ssh <vps-user>@<vps-host>
 
 curl -X POST http://127.0.0.1:9000/v1/inference \
   -H "Content-Type: application/json" \
@@ -540,7 +538,7 @@ time curl -X POST http://localhost:7000/v1/complete \
 **Diagnosis:**
 ```bash
 # Check VPS CPU
-ssh unicorn1@100.78.22.113
+ssh <vps-user>@<vps-host>
 htop  # Should see uvicorn at ~100% during inference
 ```
 
@@ -554,7 +552,7 @@ htop  # Should see uvicorn at ~100% during inference
 
 **Diagnosis:**
 ```bash
-ssh kali@100.75.37.26
+ssh <cm4-user>@<cm4-host>
 free -h  # Check available RAM
 ```
 
@@ -661,12 +659,3 @@ Before deploying optimizations:
 - **Circuit Breaker:** [`cerebrum/core/vps_client.py`](../../cerebrum-pi/cerebrum/core/vps_client.py)
 - **Load Shedding:** [`cerebrum/api/middleware/load_shed.py`](../../cerebrum-pi/cerebrum/api/middleware/load_shed.py)
 - **VPS Inference:** [`vps_server/main.py`](../../cerebrum-backend/vps_server/main.py)
-
----
-
-**Performance is an ongoing process. Measure, optimize, repeat.** 🎯
-````
-
----
-
-**Complete performance documentation based on real measurements and decisions!** Ready to commit? 🎯
