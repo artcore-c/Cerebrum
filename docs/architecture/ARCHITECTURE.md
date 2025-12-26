@@ -44,9 +44,10 @@
 - **Streaming Coordination** - Real-time SSE proxying, request correlation
 
 **Future Expansion:**
-- Symbolic reasoning (Z3)
 - Vector search (FAISS)
+- Retrieval augmentation 
 - Multi-step task orchestration
+- AST-based chunking
 
 ### VPS Inference Backend
 **Role:** Heavy model computation  
@@ -211,10 +212,10 @@ python-dotenv==1.0.1
 ## Future Enhancements
 
 **Planned Components:**
-- `orchestration/` - Multi-step task coordination
-- `reasoning/` - Z3-based symbolic reasoning for logic problems
-- `tasks/` - Reusable task templates
-- `utils/` - Shared helper functions
+- `orchestration/` — multi-step task coordination
+- `retrieval/` — optional retrieval augmentation (hardware-dependent)
+- `analysis/` — static prompt/code analysis helpers
+- `utils/` — shared helpers and primitives
 
 **Potential Optimizations:**
 - Multi-model support (DeepSeek Coder)

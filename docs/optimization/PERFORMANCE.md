@@ -103,8 +103,6 @@ CM4 streaming:      <100ms
 Total:             17.11s
 ````
 
-**Observation:** Most time is inference. CM4 overhead negligible.
-
 #### Test 2: Large Prompt (With Chunking)
 ````bash
 Input:  Repeated synchronous code (5x) + refactoring instruction
