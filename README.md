@@ -281,13 +281,11 @@ Cerebrum/                        # 🎩 Root
 
 ## ☕️ Development Workflow
 
-1. Edit on Posix (VS Code + VS Code Insider)
+1. Edit on macOS (VS Code + VS Code Insider)
 2. Sync to CM4 (`rsync`)
 3. Sync to VPS (`rsync`)
 4. Test locally via REPL or API
 5. Iterate without redeploying the full system
-
-This workflow enables rapid iteration despite building with a hybrid architecture.
 
 ## 📚 Documentation
 

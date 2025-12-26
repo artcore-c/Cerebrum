@@ -20,8 +20,8 @@ Complete guide for developing, testing, and deploying Cerebrum components.
 ### macOS Setup (Primary Development Machine)
 
 **Requirements:**
-- macOS 12.7.6 (Monterey) or later
-- VS Code + VS Code Insider
+- macOS (Monterey) or later
+- VS Code (or VS Code Insiders)
 - Git
 - Python 3.11+ (for local testing)
 - SSH access to CM4 and VPS
