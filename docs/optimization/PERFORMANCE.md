@@ -492,7 +492,7 @@ POST /v1/complete/batch
 ### CM4 Overhead Measurement
 ```bash
 # Time chunking operation
-ssh <cm4-user>@<cm4-host>
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 python3 << EOF
 import time
@@ -509,7 +509,7 @@ EOF
 ### VPS Inference Speed
 ```bash
 # Measure tok/s
-ssh <vps-user>@<vps-host>
+ssh vps-user@vps-host
 
 curl -X POST http://127.0.0.1:9000/v1/inference \
   -H "Content-Type: application/json" \
@@ -536,7 +536,7 @@ time curl -X POST http://localhost:7000/v1/complete \
 **Diagnosis:**
 ```bash
 # Check VPS CPU
-ssh <vps-user>@<vps-host>
+ssh vps-user@vps-host
 htop  # Should see uvicorn at ~100% during inference
 ```
 
@@ -550,7 +550,7 @@ htop  # Should see uvicorn at ~100% during inference
 
 **Diagnosis:**
 ```bash
-ssh <cm4-user>@<cm4-host>
+ssh cm4-user@cm4-host
 free -h  # Check available RAM
 ```
 

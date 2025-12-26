@@ -544,6 +544,7 @@ async function retryRequest(fn, maxRetries = 3) {
     try {
       return await fn();
     } catch (err) {
+      // assumes client surfaces HTTP status on error
       if (err.status === 429 && i < maxRetries - 1) {
         await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
         continue;

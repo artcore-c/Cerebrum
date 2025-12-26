@@ -20,7 +20,7 @@ Complete guide for developing, testing, and deploying Cerebrum components.
 ### macOS Setup (Primary Development Machine)
 
 **Requirements:**
-- macOS Monterey or later
+- macOS 12.7.6 (Monterey) or later
 - VS Code + VS Code Insider
 - Git
 - Python 3.11+ (for local testing)
@@ -139,14 +139,14 @@ models/                       # Too large, managed separately
 ```bash
 rsync -avz --exclude='__pycache__' --exclude='.venv' \
   ~/Cerebrum/cerebrum-pi/ \
-  kali@100.75.37.26:/opt/cerebrum-pi/
+  cm4-user@cm4-host:/opt/cerebrum-pi/
 ```
 
 **VPS:**
 ```bash
 rsync -avz --exclude='__pycache__' --exclude='.venv' --exclude='models' \
   ~/Cerebrum/cerebrum-backend/ \
-  unicorn1@100.78.22.113:~/Cerebrum/cerebrum-backend/
+  vps-user@vps-host:~/Cerebrum/cerebrum-backend/
 ```
 
 ---
@@ -177,7 +177,7 @@ pytest tests/
 
 **SSH into CM4:**
 ```bash
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 ```
 
 **Full System Test:**
@@ -222,7 +222,7 @@ tail -f logs/cerebrum.log
 
 **SSH into VPS:**
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 ```
 
 **Full System Test:**
@@ -269,21 +269,21 @@ sudo journalctl -u cerebrum-backend -f
 **CM4: "Can't connect to VPS"**
 ```bash
 # Check Tailscale
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 sudo tailscale status
 
 # Test VPS directly
 ./test_vps.sh
 
 # Check VPS is running
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 cd ~/Cerebrum/cerebrum-backend
 ps aux | grep uvicorn
 ```
 
 **CM4: "Port already in use"**
 ```bash
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 sudo lsof -i :7000
 # Kill process if needed
 kill <PID>
@@ -291,7 +291,7 @@ kill <PID>
 
 **VPS: "Model not found"**
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 
 # Verify model paths in code
 grep "model_paths" ~/Cerebrum/cerebrum-backend/vps_server/main.py
@@ -302,7 +302,7 @@ ls -lh ~/Cerebrum/cerebrum-backend/models/
 
 **VPS: "Out of memory"**
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 
 # Check memory
 free -h
@@ -379,7 +379,7 @@ grep "65652caa-c647-4685-be81-5e51bc97f453" logs/cerebrum.log
 
 5. **Test on device:**
 ```bash
-   ssh kali@100.75.37.26
+   ssh cm4-user@cm4-host
    cd /opt/cerebrum-pi
    ./test.sh
 ```
@@ -419,7 +419,7 @@ python -m py_compile cerebrum/api/routes/inference.py
 **4. Sync and test:**
 ```bash
 ./scripts/sync_to_cm4.sh
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 ./stop.sh && ./start.sh
 curl -X POST http://localhost:7000/v1/explain \
@@ -507,7 +507,7 @@ vim ~/Cerebrum/cerebrum-pi/requirements.txt
 ./scripts/sync_to_cm4.sh
 
 # Install on CM4
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -518,7 +518,7 @@ pip install -r requirements.txt
 ```bash
 # Same process for cerebrum-backend/requirements.txt
 ./scripts/sync_to_vps.sh
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 cd ~/Cerebrum/cerebrum-backend
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -529,7 +529,7 @@ sudo systemctl restart cerebrum-backend
 
 **1. Download model to VPS:**
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 cd ~/Cerebrum/cerebrum-backend/models/
 wget https://huggingface.co/.../model.gguf
 ```
@@ -558,7 +558,7 @@ _MODEL_MAP = {
 **5. Sync and restart CM4:**
 ```bash
 ./scripts/sync_to_cm4.sh
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 ./stop.sh && ./start.sh
 ```
@@ -567,7 +567,7 @@ cd /opt/cerebrum-pi
 
 **On VPS:**
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 cd ~/Cerebrum/cerebrum-backend/scripts
 ./generate_api_key.sh
 # Copy new key
@@ -575,7 +575,7 @@ cd ~/Cerebrum/cerebrum-backend/scripts
 
 **Update CM4 `.env`:**
 ```bash
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 nano /opt/cerebrum-pi/.env
 # Paste new CEREBRUM_API_KEY
 ```
@@ -596,7 +596,7 @@ cd /opt/cerebrum-pi
 
 ### CM4 Overhead Measurement
 ```bash
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 
 # Time a simple request
@@ -614,7 +614,7 @@ Total: 15.25s
 
 ### VPS Resource Monitoring
 ```bash
-ssh unicorn1@100.78.22.113
+ssh vps-user@vps-host
 
 # Watch resources during inference
 watch 'curl -s http://127.0.0.1:9000/health | jq'
@@ -675,14 +675,14 @@ brew install rsync
 ### "Permission denied" on sync
 ```bash
 # Fix CM4 permissions
-ssh kali@100.75.37.26
-sudo chown -R kali:kali /opt/cerebrum-pi
+ssh cm4-user@cm4-host
+sudo chown -R $(id -un):$(id -gn) /opt/cerebrum-pi
 ```
 
 ### Python import errors after sync
 ```bash
 # Reinstall dependencies
-ssh kali@100.75.37.26
+ssh cm4-user@cm4-host
 cd /opt/cerebrum-pi
 source .venv/bin/activate
 pip install --force-reinstall -r requirements.txt
@@ -694,8 +694,8 @@ pip install --force-reinstall -r requirements.txt
 tailscale status
 
 # Use IP instead
-ssh kali@100.75.37.26
-ssh unicorn1@100.78.22.113
+ssh cm4-user@cm4-host
+ssh vps-user@vps-host
 ```
 
 ---
@@ -723,6 +723,3 @@ ssh unicorn1@100.78.22.113
 - **CM4 Setup:** [`/cerebrum-pi/README.md`](../../cerebrum-pi/README.md)
 - **VPS Setup:** [`/cerebrum-backend/README.md`](../../cerebrum-backend/README.md)
 
----
-
-**Questions? Open an issue or discussion on GitHub!**
