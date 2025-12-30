@@ -30,7 +30,7 @@
 
 ## Architecture
 
-Cerebrum was designed to run in parallel with the [uConsole-cyberdeck-router](https://github.com/artcore-c/uConsole-cyberdeck-router-with-WireGuard-VPN), running on a single Raspberry Pi CM4 handling both VPN routing and AI orchestration simultaneously. Cerebrum does not require Cyberdeck-Router and can be run standalone.
+Cerebrum was designed to run in parallel with [uConsole __cyberdeck__ router](https://github.com/artcore-c/uConsole-cyberdeck-router-with-WireGuard-VPN), running on a single Raspberry Pi CM4 handling both VPN routing and AI orchestration simultaneously. Cerebrum does not require Cyberdeck-Router and can be run standalone.
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Raspberry Pi CM4 (Orchestrator + VPN Router)           │
