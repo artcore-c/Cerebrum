@@ -31,6 +31,9 @@ shared/models/*.gguf
 shared/models/*.bin
 shared/embeddings/*.faiss
 
+# systemd service files (host-specific)
+cerebrum-backend/cerebrum-backend.service
+
 # Environment files
 .env
 .env.local

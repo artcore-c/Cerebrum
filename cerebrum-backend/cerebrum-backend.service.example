@@ -1,0 +1,54 @@
+[Unit]
+Description=Cerebrum VPS Backend
+After=network.target
+
+[Service]
+# ------------------------------------------------------------
+# Resource limits (tune for your VPS)
+# ------------------------------------------------------------
+CPUQuota=95%
+Nice=10
+TasksMax=50
+MemoryHigh=6000M
+MemoryMax=6500M
+OOMPolicy=stop
+
+# ------------------------------------------------------------
+# Service execution
+# ------------------------------------------------------------
+Type=simple
+
+# System user that owns the Cerebrum backend
+# Create this user or change as needed
+User=cerebrum
+
+# Path to the backend repository
+WorkingDirectory=/opt/cerebrum-backend
+
+# Activate virtual environment
+Environment="PATH=/opt/cerebrum-backend/venv/bin"
+
+# Load environment variables (.env)
+EnvironmentFile=/opt/cerebrum-backend/.env
+
+# Start the FastAPI server
+ExecStart=/opt/cerebrum-backend/venv/bin/uvicorn \
+  vps_server.main:app \
+  --host ${VPS_BIND_IP} \
+  --port ${CEREBRUM_VPS_PORT} \
+  --workers 1
+
+# ------------------------------------------------------------
+# Reliability
+# ------------------------------------------------------------
+Restart=on-failure
+RestartSec=5
+
+# ------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------
+StandardOutput=append:/var/log/cerebrum/backend.log
+StandardError=append:/var/log/cerebrum/error.log
+
+[Install]
+WantedBy=multi-user.target
