@@ -1,6 +1,6 @@
 # /opt/cerebrum-pi/scripts/cerebrum_repl.sh
 # 
-# Cerebrum Streaming REPL (Optimized)
+# Cerebrum Streaming REPL (Optimized) - minimal
 # A minimal, text-first interface for AI code generation
 # Usage: ./cerebrum_repl.sh
 

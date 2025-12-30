@@ -2,7 +2,7 @@
 #
 # /opt/cerebrum-pi/scripts/cerebrum_og.sh
 #
-# Cerebrum Streaming REPL (Optimized)
+# Cerebrum Streaming REPL (Optimized) - original green + stats
 # A minimal, text-first interface for AI code generation
 # Usage: ./cerebrum_repl.sh
 
