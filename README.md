@@ -30,12 +30,12 @@
 
 ## Architecture
 
-Cerebrum was designed to run in parallel with [uConsole _cyberdeck_ router](https://github.com/artcore-c/uConsole-cyberdeck-router-with-WireGuard-VPN), running on a single Raspberry Pi CM4 handling both VPN routing and AI orchestration simultaneously. Cerebrum does not require _Cyberdeck_ Router for the uConsole and can be run standalone.
+Cerebrum was designed to run alongside [uConsole _cyberdeck_ router](https://github.com/artcore-c/uConsole-cyberdeck-router-with-WireGuard-VPN), running on a single Raspberry Pi CM4 handling both VPN routing and AI orchestration simultaneously. Cerebrum does not require _Cyberdeck_ Router for the uConsole and can be run standalone.
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Raspberry Pi CM4 (Orchestrator + VPN Router)           │
 │  ┌───────────────────────────────────────────────────┐  │
-│  │  Cyberdeck Router (~2% CPU baseline)              │  │
+│  │  Cyberdeck Router (isolated)                      │  │
 │  └───────────────────────────────────────────────────┘  │
 │  ┌───────────────────────────────────────────────────┐  │
 │  │  FastAPI Server (Port 7000)                       │  │
@@ -95,13 +95,12 @@ Data Flow:
 - After chunking: 3,167 chars (62% reduction)
 - Result: Actual async/await refactored code (not TODO lists!)
 
-**Concurrent Operation (By Design):**
-- VPS baseline: 1.8-3% CPU (idle with Cerebrum + Cyberdeck running)
+**Resource-Aware Design:**
 - Max concurrent: 2 requests (load shedding)
 - Circuit breaker: 10s cooldown after VPS failures
 - Request timeout: Configurable per endpoint
 - Connection pooling: Persistent HTTP client (no repeated initialization)
-- Zero degradation in VPN connection quality or throughput
+- Zero degradation in VPN connection quality or throughput (_cyberdeck_ router)
 
 **Interactive REPL + API**
 - Bash-based interactive shell for fast iteration
