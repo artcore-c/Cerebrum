@@ -12,3 +12,7 @@ sudo cp cerebrum-backend.service.example /etc/systemd/system/cerebrum-backend.se
 sudo systemctl daemon-reload
 sudo systemctl enable cerebrum-backend
 sudo systemctl start cerebrum-backend
+```
+
+For detailed systemd configuration information:  
+📙 See: [Systemd Service Configuration](../../cerebrum-backend/README.md#systemd-service-configuration)
