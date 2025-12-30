@@ -103,8 +103,10 @@ Data Flow:
 
 ## 🚀 Quick Start
 **Prerequisites**
-- Raspberry Pi CM4 (4GB RAM 0GB eMMC Lite)
-- VPS with 4GB+ RAM (8GB+ for multiple large models running simultainiously)
+- Raspberry Pi CM4 (4GB RAM 0GB eMMC Lite), or other compatible Edge device
+- VPS with 4GB+ RAM (8GB+ for multiple large models running simultaneously)
+- Base OS: **Debian 12 (Bookworm)** installed on both CM4 and VPS
+ > **Note:** Debian 13+ (Trixie) should work but has not been tested.
 - Python 3.11+
 - Deployment Models Pre-installed (See below)
 
@@ -179,7 +181,7 @@ All runtime instructions live in the component-specific READMEs above.
 ```
 Cerebrum/                        # 🎩 Root
 │
-├── cerebrum-pi/                   # 🔹 CM4 Orchestrator (Raspberry Pi)
+├── cerebrum-pi/                   # 🔹 CM4 Orchestrator (Raspberry Pi) - Debian 12
 │   ├── cerebrum/
 │   │   ├── api/                     # 💫 FastAPI Application (Active)
 │   │   │   ├── main.py                  # Application entry point
@@ -231,7 +233,7 @@ Cerebrum/                        # 🎩 Root
 │   ├── stop.sh                          # Stop orchestrator
 │   └── requirements.txt                 # Python dependencies
 │
-├── cerebrum-backend/              # 🔸 VPS Inference Backend
+├── cerebrum-backend/              # 🔸 VPS Inference Backend - Debian 12
 │   ├── vps_server/                  # ⚙️ Inference Engine (Active)
 │   │   └── main.py                      # FastAPI + llama.cpp streaming
 │   │
@@ -310,7 +312,7 @@ Built with:
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Efficient LLM inference
 - [httpx](https://www.python-httpx.org/) - Modern HTTP client with connection pooling
 - [Qwen](https://github.com/QwenLM/Qwen) - Alibaba's excellent code model
-- [Debian Project](https://www.debian.org/) - Bookworm base system foundation  
+- [Debian Project](https://www.debian.org/) - Bookworm base system foundations  
 - [Raspberry Pi](https://www.raspberrypi.com/) is a trademark of Raspberry Pi Ltd
 
 Inspired by the challenge of running production AI on a Raspberry Pi.
