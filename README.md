@@ -101,7 +101,7 @@ Data Flow:
 - Circuit breaker: 10s cooldown after VPS failures
 - Request timeout: Configurable per endpoint
 - Connection pooling: Persistent HTTP client (no repeated initialization)
-- Zero degradation in VPN connection quality or throughput (_cyberdeck_ router)
+- Zero degradation in VPN connection quality or throughput (_cyberdeck_ router/WireGuard)
 
 **Interactive REPL + API**
 - Bash-based interactive shell for fast iteration
