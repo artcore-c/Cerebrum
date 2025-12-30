@@ -106,7 +106,6 @@ Data Flow:
 - Raspberry Pi CM4 (4GB RAM 0GB eMMC Lite), or other compatible Edge device
 - VPS with 4GB+ RAM (8GB+ for multiple large models running simultaneously)
 - Base OS: **Debian 12 (Bookworm)** installed on both CM4 and VPS
- > **Note:** Debian 13+ (Trixie) should work but has not been tested.
 - Python 3.11+
 - Deployment Models Pre-installed (See below)
 
