@@ -32,7 +32,7 @@ shared/models/*.bin
 shared/embeddings/*.faiss
 
 # GUI development
-cerebrum-gui/
+CerebrumGUI/
 
 # systemd service files (host-specific)
 cerebrum-backend/cerebrum-backend.service
