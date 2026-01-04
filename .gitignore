@@ -33,7 +33,7 @@ shared/embeddings/*.faiss
 
 # GUI development
 CerebrumGUI/
-code.qt.info
+code.qt.io
 
 # systemd service files (host-specific)
 cerebrum-backend/cerebrum-backend.service
