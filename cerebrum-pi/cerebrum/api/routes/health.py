@@ -34,6 +34,8 @@ class HealthResponse(BaseModel):
     queue_count: int
     uptime_seconds: float
     uptime_text: str
+    
+    cpu_percent: float
 
 @router.get("/health", response_model=HealthResponse)
 async def health_check():
@@ -42,6 +44,8 @@ async def health_check():
     vps_health = await vps.check_health()
     vps_available = vps_health.get("available", False)
     vps_status = "healthy" if vps_available else "unavailable"
+    
+    cpu_percent = vps_health.get("cpu_usage_percent", 0.0)
     
     now = time.time()
     uptime = max(
@@ -65,5 +69,7 @@ async def health_check():
         queue_count=queue_count,
         uptime_seconds=uptime,
         uptime_text=format_uptime(uptime),
+
+        cpu_percent=cpu_percent,
     )
 
