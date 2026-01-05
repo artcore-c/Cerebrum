@@ -6,7 +6,7 @@
 
 <p align="center">
 
-  <img src="docs/diagrams/images/CerebrumGUI_QML.png" alt="CerebrumGUI_QML" width="725"/>
+  <img src="docs/diagrams/images/CerebrumGUI_QML.png" alt="CerebrumGUI_QML" width="1280"/>
 
 </p>
 
