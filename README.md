@@ -29,8 +29,11 @@
 **Language-Aware Model Routing**
 > Automatic selection between Qwen-7B (Python/JS) and CodeLLaMA-7B (Rust/C/C++) per request
 
-**Lightweight CLI Interface**
-> Streaming REPL with multiline support, command history, and live token display
+**Native Qt/QML Interface (Debian)**  
+> uConsole GUI with real-time streaming chat, live CPU monitoring, health indicators, and system metrics 
+
+**Includes Optional Lightweight REPL CLI**
+> Streaming REPL with multiline support, command history, and live token display for headless environments
 
 ## Architecture
 
