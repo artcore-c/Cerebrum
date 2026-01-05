@@ -326,6 +326,7 @@ Built with:
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Efficient LLM inference
 - [httpx](https://www.python-httpx.org/) - Modern HTTP client with connection pooling
 - [Qwen](https://github.com/QwenLM/Qwen) - Alibaba's excellent code model
+- [Qt](https://www.qt.io/) - GUI framework with Qt Design Studio for native GUI development
 - [Debian Project](https://www.debian.org/) - Bookworm base system foundations  
 - [Raspberry Pi](https://www.raspberrypi.com/) is a trademark of Raspberry Pi Ltd
 
