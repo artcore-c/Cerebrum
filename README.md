@@ -8,6 +8,8 @@
   <img src="docs/diagrams/images/Cerebrum_CLI-(SSH).jpg" alt="Cerebrum_CLI(SSH)" width="725"/>
 </p>
 
+![Version](https://img.shields.io/badge/version-v1.7.0-blue) ![OS](https://img.shields.io/badge/OS-Debian-red)
+
 ## What Makes Cerebrum Different
 
 **Streaming-First Design**
