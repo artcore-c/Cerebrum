@@ -4,11 +4,19 @@
 
 > Real-time AI code completion and refactoring running on a Clockwork Pi uConsole **Raspberry Pi CM4**, powered by VPS inference and intelligent context management.
 
+<p align="center">
+
+  <img src="docs/diagrams/images/Cerebrum_CLI-(SSH).jpg" alt="Cerebrum_CLI(SSH)" width="725"/>
+
+</p>
+
+<div align="center>
+
 ![Version](https://img.shields.io/badge/version-v1.7.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![OS](https://img.shields.io/badge/OS-Debian-red)
 
-<p align="center">
-  <img src="docs/diagrams/images/Cerebrum_CLI-(SSH).jpg" alt="Cerebrum_CLI(SSH)" width="725"/>
-</p>
+</div>
+
+---
 
 ## What Makes Cerebrum Different
 
