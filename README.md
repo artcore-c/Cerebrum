@@ -317,6 +317,11 @@ Cerebrum™ © 2025 Robert Hall. All rights reserved.
 
 This project is licensed under the [MIT License](./LICENSE).
 
+## Third-Party Licenses
+
+This project uses Qt, which is licensed under LGPL v3.  
+See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-obligations) for details.
+
 ---
 
 ## Acknowledgments
