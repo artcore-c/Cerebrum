@@ -10,12 +10,6 @@
 
 </p>
 
-<div align="center">
-
-![Version](https://img.shields.io/badge/version-v1.9.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![OS](https://img.shields.io/badge/OS-Debian-red)
-
-</div>
-
 ---
 
 ## What Makes Cerebrum Different
