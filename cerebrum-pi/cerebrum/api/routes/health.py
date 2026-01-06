@@ -30,11 +30,11 @@ class HealthResponse(BaseModel):
     
     # NEW (GUI-facing)
     vps_connected: bool
+    active_model: str | None = None
     active_count: int
     queue_count: int
     uptime_seconds: float
     uptime_text: str
-    
     cpu_percent: float
 
 @router.get("/health", response_model=HealthResponse)
@@ -42,6 +42,7 @@ async def health_check():
     """Check both CM4 status and VPS availability"""
     vps = get_vps_client()
     vps_health = await vps.check_health()
+    active_model = vps_health.get("active_model")
     vps_available = vps_health.get("available", False)
     vps_status = "healthy" if vps_available else "unavailable"
     
@@ -65,11 +66,11 @@ async def health_check():
         
         # GUI fields
         vps_connected=vps_available,
+        active_model=active_model,
         active_count=active_count,
         queue_count=queue_count,
         uptime_seconds=uptime,
         uptime_text=format_uptime(uptime),
-
         cpu_percent=cpu_percent,
     )
 
