@@ -167,9 +167,9 @@ class VPSModelEngine:
 
             # Map model names to file paths
             model_paths = {
-                "qwen_7b": "/home/unicorn1/cerebrum-backend/models/qwen-7b-q4.gguf",
-                "codellama_7b": "/home/unicorn1/cerebrum-backend/models/codellama-7b-q4.gguf",
-                "deepseek_6b": "/home/unicorn1/cerebrum-backend/models/deepseek-6.7b-q4.gguf",
+                "qwen_7b": "/home/vps_user/cerebrum-backend/models/qwen-7b-q4.gguf",
+                "codellama_7b": "/home/vps_user/cerebrum-backend/models/codellama-7b-q4.gguf",
+                "deepseek_6b": "/home/vps_user/cerebrum-backend/models/deepseek-6.7b-q4.gguf",
             }
 
             if model_name not in model_paths:
