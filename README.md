@@ -26,7 +26,7 @@
 **Production-Grade Resilience**
 > Circuit breakers, connection pooling, load shedding, and request correlation IDs throughout
 
-**Language-Aware Model Routing**
+**Language-Aware Model Routing** *(Planned for v2.0)*
 > Automatic selection between Qwen-7B (Python/JS) and CodeLLaMA-7B (Rust/C/C++) per request
 
 **Native Qt/QML Interface (Debian)**  
