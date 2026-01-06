@@ -303,7 +303,7 @@ async def health_check():
         ram_available_gb=ram_available,
         ram_used_gb=ram_used,
         models_in_cache=list(vps_engine.models.keys()),
-        uptime_seconds=vps_engine.get_uptime()
+        uptime_seconds=vps_engine.get_uptime(),
         active_model=vps_engine.get_active_model()
     )
 
