@@ -110,6 +110,7 @@ class HealthResponse(BaseModel):
     ram_used_gb: float
     models_in_cache: list[str]
     uptime_seconds: float
+    active_model: Optional[str] = None
 
 
 # ============================================================================
@@ -135,6 +136,12 @@ class VPSModelEngine:
         available = mem.available / (1024**3)
         used = mem.used / (1024**3)
         return available, used
+
+    def get_active_model(self) -> Optional[str]:
+        if not self.load_times:
+            return None
+        # Most recently used model
+        return max(self.load_times, key=self.load_times.get)
 
     def can_accept_request(self) -> tuple[bool, str]:
         """Check if VPS can accept new inference request"""
@@ -297,6 +304,7 @@ async def health_check():
         ram_used_gb=ram_used,
         models_in_cache=list(vps_engine.models.keys()),
         uptime_seconds=vps_engine.get_uptime()
+        active_model=vps_engine.get_active_model()
     )
 
 
