@@ -169,9 +169,7 @@ class VPSModelEngine:
             model_paths = {
                 "qwen_7b": "/home/unicorn1/cerebrum-backend/models/qwen-7b-q4.gguf",
                 "codellama_7b": "/home/unicorn1/cerebrum-backend/models/codellama-7b-q4.gguf",
-                "codellama_13b": "/home/unicorn1/cerebrum-backend/models/codellama-13b-q3.gguf",
                 "deepseek_6b": "/home/unicorn1/cerebrum-backend/models/deepseek-6.7b-q4.gguf",
-                "wizardcoder_15b": "/home/unicorn1/cerebrum-backend/models/wizardcoder-15b-q2.gguf",
             }
 
             if model_name not in model_paths:
@@ -469,9 +467,7 @@ async def list_models(x_api_key: str = Header(None, alias="X-API-Key")):
         "available_models": [
             "qwen_7b",
             "codellama_7b",
-            "codellama_13b",
-            "deepseek_6b",
-            "wizardcoder_15b"
+            "deepseek_6b"
         ],
         "cached_models": list(vps_engine.models.keys()),
         "inference_counts": vps_engine.inference_count
