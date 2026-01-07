@@ -130,7 +130,7 @@ CerebrumGUI expects the following orchestrator endpoints:
 | `/v1/complete/stream` | POST | SSE streaming inference |
 | `/v1/models` | GET | Available models (optional) |
 
-See: [Cerebrum Backend API](../cerebrum-backend/README.md#api-endpoints) for endpoint specifications.
+See: [Cerebrum Backend API](../../cerebrum-backend/README.md#api-endpoints) for endpoint specifications.
 
 ---
 
