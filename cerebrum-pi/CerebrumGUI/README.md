@@ -3,7 +3,7 @@
 Native Qt/QML desktop-grade edge device interface for Cerebrum distributed AI orchestration system.
 
 <p align="center">
-  <img src="docs/images/CerebrumGUI_let's_build.png" alt="CerebrumGUI Let's Build" width="1280"/>
+  <img src="../docs/images/CerebrumGUI_let's_build.png" alt="CerebrumGUI Let's Build" width="1280"/>
 </p>
 
 ---
