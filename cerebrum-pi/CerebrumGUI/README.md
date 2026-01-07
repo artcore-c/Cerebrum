@@ -221,7 +221,7 @@ CerebrumGUI displays the currently active model reported by the orchestrator via
 ```bashp
 pkill -f "uvicorn vps_server.main"
 ```
-3. Update model configuration in `vps_server/main.py`(see [model-configuration](../../cerebrum-backend#model-paths))
+3. Update model configuration in `vps_server/main.py`(see [model-configuration](../../cerebrum-backend#model-paths-(important)))
 
 4. Restart the backend 
 ```bash
