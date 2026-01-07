@@ -32,7 +32,6 @@ shared/embeddings/*.faiss
 
 # CMake / Qt builds
 CerebrumGUI/
-asset_imports*/
 cmake-build*/
 build*/
 
