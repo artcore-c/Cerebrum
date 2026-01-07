@@ -332,8 +332,6 @@ See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-ob
 - [Qt Documentation](https://doc.qt.io/qt-6/) - Qt framework reference
 - [QML Reference](https://doc.qt.io/qt-6/qmlapplications.html) - QML language guide
 
----
-
 ## Contributing
 
 CerebrumGUI is part of the Cerebrum distributed AI project. Contributions, bug reports, and feature requests are welcome.
