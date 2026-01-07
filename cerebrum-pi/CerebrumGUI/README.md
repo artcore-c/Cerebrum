@@ -340,7 +340,7 @@ Bug reports, documentation fixes, and design suggestions related to the GUI are 
 
 Please open an issue in the main Cerebrum repository to share feedback or report issues.
 
-See: [Cerebrum](../../README.md#contributing) README.md for contribution guidelines.
+See: [Cerebrum](blob/main/README.md#contributing) README.md for contribution guidelines.
 
 ## Acknowledgments
 
