@@ -347,8 +347,7 @@ Built with:
 - [Debian Project](https://www.debian.org/) - Bookworm base system foundations  
 - [Raspberry Pi](https://www.raspberrypi.com/) is a trademark of Raspberry Pi Ltd
 
-Inspired by the challenge of running production AI on a Raspberry Pi.
-
 ---
 
-**Questions? Issues? PRs welcome!**
+Inspired by the challenge of running production AI on a Raspberry Pi.
+
