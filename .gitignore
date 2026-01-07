@@ -32,18 +32,26 @@ shared/embeddings/*.faiss
 
 # CMake / Qt builds
 CerebrumGUI/
+asset_imports*/
 cmake-build*/
 build*/
 
-# Qt / QML generated files
+# Qt / QML generated
 *.user
 *.user.*
+*.autosave
 *.qmlc
 *.jsc
 *.moc
+*.qmltypes
+*qml_module_dir_map.qrc
+*qmlcache*
+*qmltyperegistrations.cpp
+*qmltyperegistrations.cpp.o
+*qmltyperegistrations.cpp.d
+.qmake.stash
 *.qrc.depends
 *.qrc.depends.*
-.qmake.stash
 
 # systemd service files (host-specific)
 cerebrum-backend/cerebrum-backend.service
