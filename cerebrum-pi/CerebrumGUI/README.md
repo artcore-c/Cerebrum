@@ -233,12 +233,12 @@ uvicorn vps_server.main:app --host 127.0.0.1 --port 9000
 
 5. Click **Refresh** in GUI to reconnect
 
-> **Note:** Dynamic model switching may be enabled in an upcoming project, with Cerebrum the foundation...
+> **Note:** Dynamic model switching may be enabled in an upcoming project, with Cerebrum as the foundation...
 
 ### Connection Management
 
 - **Health Polling:** Every 2 seconds (paused during active generation)
-- **Reconnection:** Automatic via Refresh button or Ctrl+R
+- **Reconnection:** Automatic, or via Refresh button or Ctrl+R
 - **Timeout Handling:** Graceful degradation with visual status indicators
 
 ### SSE Streaming
@@ -334,9 +334,11 @@ See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-ob
 
 ## Contributing
 
-CerebrumGUI is part of the Cerebrum distributed AI project. Contributions, bug reports, and feature requests are welcome.
+CerebrumGUI is part of the Cerebrum distributed AI project. 
 
-See: [Cerebrum](../../README.md) main for contribution guidelines.
+Bug reports, documentation fixes, and design suggestions related to the GUI are welcome. Please open an issue in the main Cerebrum repository to share feedback or report issues.
+
+See: [Cerebrum](../../README.md#contributing) README.md for contribution guidelines.
 
 ## Acknowledgments
 

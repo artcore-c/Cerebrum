@@ -324,6 +324,18 @@ See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-ob
 
 ---
 
+## Contributing
+
+The Cerebrum project is authored by a sole developer and maintainer.
+
+Bug reports, documentation fixes, and design suggestions are always
+welcome and appreciated. If you encounter an issue or have an idea to share, please open an issue in 
+[Cerebrum/issues](https://github.com/artcore-c/Cerebrum/issues).
+
+At this time, direct write access and unsolicited feature pull requests are not
+accepted. All code changes are curated by the maintainer to ensure architectural
+consistency and system stability.
+
 ## Acknowledgments
 
 Built with:
