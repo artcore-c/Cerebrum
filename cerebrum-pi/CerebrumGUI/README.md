@@ -311,6 +311,12 @@ Debug build enables extensive SSE parsing logs via `qDebug()`.
 - Install Fira Code: `sudo apt install fonts-firacode`
 - Fallback to system monospace if unavailable
 
+## Related Documentation
+
+- [Cerebrum](../../README.md) - Cerebrum Project
+- [Qt Documentation](https://doc.qt.io/qt-6/) - Qt framework reference
+- [QML Reference](https://doc.qt.io/qt-6/qmlapplications.html) - QML language guide
+
 ---
 
 ## License
@@ -325,12 +331,6 @@ This project uses Qt, which is licensed under LGPL v3.
 See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-obligations) for details.
 
 ---
-
-## Related Documentation
-
-- [Cerebrum](../../README.md) - Cerebrum Project
-- [Qt Documentation](https://doc.qt.io/qt-6/) - Qt framework reference
-- [QML Reference](https://doc.qt.io/qt-6/qmlapplications.html) - QML language guide
 
 ## Contributing
 
