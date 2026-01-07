@@ -51,6 +51,8 @@ build*/
 *.qrc.depends
 *.qrc.depends.*
 
+# secrets
+
 # systemd service files (host-specific)
 cerebrum-backend/cerebrum-backend.service
 
