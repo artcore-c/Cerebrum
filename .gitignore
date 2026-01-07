@@ -31,7 +31,6 @@ shared/models/*.bin
 shared/embeddings/*.faiss
 
 # CMake / Qt builds
-CerebrumGUI/
 cmake-build*/
 build*/
 
