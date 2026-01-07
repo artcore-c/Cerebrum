@@ -336,7 +336,9 @@ See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-ob
 
 CerebrumGUI is part of the Cerebrum distributed AI project. 
 
-Bug reports, documentation fixes, and design suggestions related to the GUI are welcome. Please open an issue in the main Cerebrum repository to share feedback or report issues.
+Bug reports, documentation fixes, and design suggestions related to the GUI are welcome. 
+
+Please open an issue in the main Cerebrum repository to share feedback or report issues.
 
 See: [Cerebrum](../../README.md#contributing) README.md for contribution guidelines.
 
