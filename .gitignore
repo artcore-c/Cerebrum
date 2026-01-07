@@ -21,9 +21,8 @@ env/
 *.swp
 *.swo
 *~
-.DS_Store
 
-# Cerebrum specific
+# Cerebrum runtime data
 cm4/data/cache/
 cm4/logs/*.log
 vps/logs/*.log
@@ -31,9 +30,20 @@ shared/models/*.gguf
 shared/models/*.bin
 shared/embeddings/*.faiss
 
-# GUI development
+# CMake / Qt builds
 CerebrumGUI/
-code.qt.io
+cmake-build*/
+build*/
+
+# Qt / QML generated files
+*.user
+*.user.*
+*.qmlc
+*.jsc
+*.moc
+*.qrc.depends
+*.qrc.depends.*
+.qmake.stash
 
 # systemd service files (host-specific)
 cerebrum-backend/cerebrum-backend.service
