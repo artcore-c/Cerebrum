@@ -324,7 +324,6 @@ See [Qt's Open Source Licensing](https://www.qt.io/licensing/open-source-lgpl-ob
 
 ---
 
-<a id="contributing"></a>
 ## Contributing
 
 The Cerebrum project is authored by a sole developer and maintainer.
