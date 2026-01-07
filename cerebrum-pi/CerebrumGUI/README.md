@@ -317,7 +317,7 @@ Debug build enables extensive SSE parsing logs via `qDebug()`.
 
 Cerebrum™ © 2025 Robert Hall. All rights reserved.
 
-This project is licensed under the [MIT License](../../LICENSE).
+This project is licensed under the [MIT License](/LICENSE).
 
 ## Third-Party Licenses
 
